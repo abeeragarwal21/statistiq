@@ -162,6 +162,7 @@ form.addEventListener("submit", async (e) => {
         wickets: parseInt(document.getElementById("wickets").value) || 0,
         catches: parseInt(document.getElementById("catches").value) || 0,
         runouts: parseInt(document.getElementById("runouts").value) || 0,
+        stumpings: parseInt(document.getElementById("stumpings").value) || 0,
         captain: document.getElementById("captain").checked,
         notes: document.getElementById("notes").value,
     };
@@ -304,6 +305,13 @@ function renderHistory(filteredMatches) {
             ? `${match.wickets}/${match.runsConceded} (${match.overs} ov, Econ: ${matchEconomy})`
             : "Did not bowl";
 
+        // Build the fielding string dynamically
+        let fieldingParts = [];
+        if (match.catches > 0) fieldingParts.push(`${match.catches}c`);
+        if (match.runouts > 0) fieldingParts.push(`${match.runouts}ro`);
+        if (match.stumpings > 0) fieldingParts.push(`${match.stumpings}st`);
+        let fieldingStr = fieldingParts.join(", ");
+
         const html = `
             <div class="match-card">
                 <div class="match-card-header">
@@ -319,7 +327,7 @@ function renderHistory(filteredMatches) {
                 <div class="match-performances">
                     <div class="perf-section"><strong>Batting</strong><span><i class="fas fa-baseball-bat-ball"></i> ${battingText}</span></div>
                     <div class="perf-section"><strong>Bowling</strong><span><i class="fas fa-baseball-ball"></i> ${bowlingText}</span></div>
-                    ${match.catches > 0 || match.runouts > 0 ? `<div class="perf-section"><strong>Fielding</strong><span><i class="fas fa-hands"></i> ${match.catches}c, ${match.runouts}ro</span></div>` : ""}
+                    ${fieldingParts.length > 0 ? `<div class="perf-section"><strong>Fielding</strong><span><i class="fas fa-hands"></i> ${fieldingStr}</span></div>` : ""}
                 </div>
                 ${match.notes ? `<div style="margin-top: 12px; padding-top: 10px; font-size: 0.85rem; color: var(--text-muted); font-style: italic;"><i class="fas fa-comment-dots" style="color: var(--text-muted); margin-right: 5px; width: 16px; text-align: center;"></i> "${match.notes}"</div>` : ""}
             </div>
