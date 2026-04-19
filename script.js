@@ -33,6 +33,10 @@ const authSubmitBtn = document.getElementById("authSubmitBtn");
 const toggleAuthMode = document.getElementById("toggleAuthMode");
 const logoutBtn = document.getElementById("logoutBtn");
 
+// NEW: Status Bar Element
+const statusBar = document.getElementById("statusBar");
+let statusTimeout;
+
 // Filter & Modal Elements
 const historyFilter = document.getElementById("historyFilter");
 const dateFilterFrom = document.getElementById("dateFilterFrom");
@@ -41,6 +45,25 @@ const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 const modal = document.getElementById("matchModal");
 const openModalBtn = document.getElementById("openModalBtn");
 const closeModalSpan = document.getElementsByClassName("close-modal")[0];
+
+// --- STATUS BAR LOGIC ---
+function showStatus(message, isError = true) {
+    // Set the icon and text
+    statusBar.innerHTML = isError
+        ? `<i class="fas fa-exclamation-circle"></i> ${message}`
+        : `<i class="fas fa-check-circle"></i> ${message}`;
+
+    // Set the color (red for error, green for success)
+    statusBar.className = `status-bar show ${isError ? "error" : "success"}`;
+
+    // Clear any existing timers so it doesn't disappear too fast if clicked twice
+    clearTimeout(statusTimeout);
+
+    // Hide it automatically after 4 seconds
+    statusTimeout = setTimeout(() => {
+        statusBar.classList.remove("show");
+    }, 4000);
+}
 
 // --- AUTHENTICATION LOGIC ---
 
@@ -59,12 +82,14 @@ authForm.addEventListener("submit", async (e) => {
     try {
         if (isLoginMode) {
             await auth.signInWithEmailAndPassword(email, password);
+            showStatus("Successfully logged in!", false);
         } else {
             await auth.createUserWithEmailAndPassword(email, password);
+            showStatus("Account created successfully!", false);
         }
         authForm.reset();
     } catch (err) {
-        alert("Error: " + err.message);
+        showStatus(err.message, true);
     }
 });
 
@@ -153,9 +178,11 @@ form.addEventListener("submit", async (e) => {
         document.getElementById("date").valueAsDate = new Date();
         modal.style.display = "none";
         loadMatches(); // Refresh data
+
+        showStatus("Match saved successfully!", false);
     } catch (err) {
         console.error("Error saving match:", err);
-        alert("Failed to save match to cloud.");
+        showStatus("Failed to save match to cloud.", true);
     }
 });
 
