@@ -21,8 +21,7 @@ An app to track your cricket season so far, with statistics and graphs to manage
 - Total Ducks
 - Total no balls
 - Total wides
-
-### Other
+- Move 50s, 100s under batting and 5wickets under bowling
 
 - Remove 3 wicket haul count
 - Create a landing page
