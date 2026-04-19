@@ -26,3 +26,4 @@ An app to track your cricket season so far, with statistics and graphs to manage
 - Remove 3 wicket haul count
 - Create a landing page
 - Add a footer
+- Add dark mode
