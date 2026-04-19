@@ -14,8 +14,12 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 let currentUser = null;
+
 let matches = [];
+
 let chartInstance = null;
+let winLossChartInstance = null;
+
 let isLoginMode = true;
 
 // DOM Elements
@@ -270,6 +274,29 @@ function updateUI() {
     document.getElementById("history-header").innerText =
         `${formatPrefix} Match History`;
 
+    // --- NEW: DATE RANGE TEXT LOGIC ---
+    const fromDate = dateFilterFrom.value;
+    const toDate = dateFilterTo.value;
+    let dateText = "All Time";
+
+    if (fromDate && toDate) {
+        // Both filters active
+        const f = new Date(fromDate).toLocaleDateString("en-GB");
+        const t = new Date(toDate).toLocaleDateString("en-GB");
+        dateText = `${f} — ${t}`;
+    } else if (fromDate) {
+        // Only "From" active
+        dateText = `Since ${new Date(fromDate).toLocaleDateString("en-GB")}`;
+    } else if (toDate) {
+        // Only "To" active
+        dateText = `Up to ${new Date(toDate).toLocaleDateString("en-GB")}`;
+    }
+
+    // Apply the text to both headings
+    document.getElementById("stats-date-range").innerText = dateText;
+    document.getElementById("history-date-range").innerText = dateText;
+    // ----------------------------------
+
     renderHistory(filteredMatches);
     calculateStats(filteredMatches);
 }
@@ -351,9 +378,14 @@ function calculateStats(filteredMatches) {
     let totalCatches = 0,
         totalRunouts = 0;
 
+    let resultsCounts = { Won: 0, Lost: 0, Draw: 0, Tie: 0 };
+
     filteredMatches.forEach((m) => {
         totalRuns += m.runs;
         totalBallsFaced += m.ballsFaced;
+
+        if (m.result) resultsCounts[m.result]++;
+
         if (m.dismissed) {
             dismissals++;
             if (m.dismissalMethod) {
@@ -417,6 +449,7 @@ function calculateStats(filteredMatches) {
     document.getElementById("stat-runouts").innerText = totalRunouts;
 
     renderStraightBarChart(dismissalCounts, dismissals);
+    renderWinLossChart(resultsCounts, filteredMatches.length);
 }
 
 function renderStraightBarChart(dismissalCounts, totalDismissals) {
@@ -433,9 +466,9 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
     wrapper.style.display = "block";
 
     const chartColors = [
-        "#e71d36",
         "#ff9f1c",
         "#2ec4b6",
+        "#e71d36",
         "#011627",
         "#a855f7",
         "#3b82f6",
@@ -446,8 +479,9 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
             label: label,
             data: [dismissalCounts[label]],
             backgroundColor: chartColors[index % chartColors.length],
-            barThickness: 24,
-            borderRadius: 2,
+            barThickness: 18,
+            borderRadius: 9,
+            borderSkipped: false,
             borderWidth: 1,
             borderColor: "#ffffff",
         };
@@ -472,6 +506,78 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
                             const value = context.raw;
                             const percentage = (
                                 (value / totalDismissals) *
+                                100
+                            ).toFixed(1);
+                            return ` ${context.dataset.label}: ${value} (${percentage}%)`;
+                        },
+                    },
+                },
+            },
+        },
+    });
+}
+
+// --- NEW WIN/LOSS CHART LOGIC ---
+function renderWinLossChart(resultsCounts, totalMatches) {
+    const ctx = document.getElementById("winLossChart").getContext("2d");
+    const wrapper = document.getElementById("winLossChartWrapper");
+
+    if (winLossChartInstance) winLossChartInstance.destroy();
+
+    if (totalMatches === 0) {
+        wrapper.style.display = "none";
+        return;
+    }
+    wrapper.style.display = "block";
+
+    // Map your specific CSS variable colors to the results
+    const resultColors = {
+        Won: "#059669", // var(--status-win)
+        Lost: "#dc2626", // var(--status-loss)
+        Draw: "#d97706", // var(--status-draw)
+        Tie: "#0ea5e9", // Nice blue for ties
+    };
+
+    // Only create chart sections for results you actually have
+    const labels = Object.keys(resultsCounts).filter(
+        (key) => resultsCounts[key] > 0,
+    );
+
+    const datasets = labels.map((label) => {
+        return {
+            label: label,
+            data: [resultsCounts[label]],
+            backgroundColor: resultColors[label],
+            barThickness: 18, // New thickness
+            borderRadius: 9, // Perfect pill shape
+            borderSkipped: false,
+            borderWidth: 1,
+            borderColor: "#ffffff",
+        };
+    });
+
+    winLossChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Results"],
+            datasets: datasets,
+        },
+        options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true, display: false, max: totalMatches },
+                y: { stacked: true, display: false },
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            const percentage = (
+                                (value / totalMatches) *
                                 100
                             ).toFixed(1);
                             return ` ${context.dataset.label}: ${value} (${percentage}%)`;

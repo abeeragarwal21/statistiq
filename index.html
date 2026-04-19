@@ -78,19 +78,8 @@
 
         <div class="container">
             <header class="app-header">
-                <button
-                    id="logoutBtn"
-                    class="delete-btn"
-                    style="
-                        position: absolute;
-                        top: 1.5rem;
-                        right: 1.5rem;
-                        font-size: 0.85rem;
-                        font-weight: 600;
-                        text-transform: uppercase;
-                    "
-                >
-                    Log Out
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Log Out
                 </button>
                 <h1>Hey there!</h1>
                 <p>Your personal performance dashboard</p>
@@ -148,6 +137,9 @@
                 <div class="card" style="height: fit-content">
                     <div class="card-header" id="stats-header">
                         All Formats Performance Stats
+                    </div>
+                    <div id="stats-date-range" class="date-range-subtitle">
+                        All Time
                     </div>
 
                     <div class="stat-category-title">
@@ -230,6 +222,26 @@
                 <div class="card">
                     <div class="card-header" id="history-header">
                         All Formats Match History
+                    </div>
+                    <div id="history-date-range" class="date-range-subtitle">
+                        All time
+                    </div>
+                    <div
+                        id="winLossChartWrapper"
+                        style="
+                            display: none;
+                            background: var(--bg-color);
+                            border-radius: 6px;
+                            padding: 1rem;
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        <div class="chart-header" style="margin-bottom: 0.5rem">
+                            <i class="fas fa-trophy"></i> Team Results
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="winLossChart"></canvas>
+                        </div>
                     </div>
                     <div id="matchList" class="match-list"></div>
                 </div>

@@ -26,6 +26,10 @@
     padding: 0;
 }
 
+html {
+    font-size: 90%; /* This scales every single 'rem' measurement down by 10% */
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
@@ -51,7 +55,7 @@ body {
    ========================================= */
 .container {
     width: 100%;
-    max-width: 80vw; /* Restricts the maximum width */
+    max-width: 90vw; /* Restricts the maximum width */
     margin: 1rem auto;
     padding: 0 1.5rem;
 }
@@ -79,6 +83,7 @@ body {
     margin-bottom: 1.5rem;
     min-height: 30vh;
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -117,6 +122,19 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* =========================================
+   DATE RANGE SUBTITLE
+   ========================================= */
+.date-range-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: -0.9rem;
+    margin-bottom: 1.5rem; /* Re-adds the space before the content starts */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 /* =========================================
@@ -269,6 +287,38 @@ button.primary-btn:hover {
 
 .delete-btn:hover {
     color: var(--status-loss);
+}
+
+/* =========================================
+   LOGOUT BUTTON
+   ========================================= */
+.logout-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+    color: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(4px); /* Glassmorphism blur effect */
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15); /* Slightly brighter glass */
+    border-color: rgba(255, 255, 255, 0.3); /* Slightly sharper border */
+    color: #fca5a5; /* Soft pastel red text */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Gentle, normal shadow */
 }
 
 /* =========================================
