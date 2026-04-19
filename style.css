@@ -242,6 +242,28 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    /* NEW: Controls the height and scrolling */
+    max-height: 80vh; /* Limits the list to 70% of the screen height */
+    overflow-y: auto; /* Turns on vertical scrolling */
+    padding-right: 0.5rem; /* Adds breathing room so the scrollbar doesn't touch the cards */
+}
+
+/* NEW: Sleek, custom scrollbar for the match list */
+.match-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.match-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.match-list::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 10px;
+}
+
+.match-list::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted);
 }
 
 .match-card {

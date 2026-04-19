@@ -166,19 +166,26 @@ form.addEventListener("submit", async (e) => {
 });
 
 async function deleteMatch(id) {
-    if (!currentUser) return;
-    if (confirm("Are you sure you want to permanently delete this match?")) {
-        try {
-            await db
-                .collection("users")
-                .doc(currentUser.uid)
-                .collection("matches")
-                .doc(id)
-                .delete();
-            loadMatches();
-        } catch (err) {
-            console.error("Error deleting match:", err);
-        }
+    if (!currentUser) {
+        showStatus("You must be logged in to delete matches.", true);
+        return;
+    }
+
+    try {
+        showStatus("Deleting match...", false);
+
+        await db
+            .collection("users")
+            .doc(currentUser.uid)
+            .collection("matches")
+            .doc(id)
+            .delete();
+
+        showStatus("Match deleted successfully!", false);
+        loadMatches(); // Refresh the screen
+    } catch (err) {
+        console.error("Error deleting match:", err);
+        showStatus("Failed to delete: " + err.message, true);
     }
 }
 
@@ -219,6 +226,16 @@ window.onclick = (e) => {
 
 // Initial state
 document.getElementById("date").valueAsDate = new Date();
+
+// Bulletproof Delete Listener (Event Delegation) ---
+matchListEl.addEventListener("click", (e) => {
+    const deleteBtn = e.target.closest(".delete-match-btn");
+
+    if (deleteBtn) {
+        const matchId = deleteBtn.getAttribute("data-id");
+        if (matchId) deleteMatch(matchId);
+    }
+});
 
 // =========================================
 // 6. DATA PROCESSING & RENDERING
@@ -300,11 +317,16 @@ function renderHistory(filteredMatches) {
             match.ballsFaced > 0 || match.runs > 0 || match.dismissed;
         const isBowling = match.overs > 0;
 
+        // NEW: Calculate Strike Rate for this specific match
+        let matchSR =
+            match.ballsFaced > 0
+                ? ((match.runs / match.ballsFaced) * 100).toFixed(2)
+                : "0.00";
+
+        // NEW: Added (SR: xxx) to the output string
         let battingText = isBatting
-            ? `${match.runs}${match.dismissed ? "" : "*"} off ${match.ballsFaced} balls`
+            ? `${match.runs}${match.dismissed ? "" : "*"} off ${match.ballsFaced} balls (SR: ${matchSR})`
             : "Did not bat";
-        if (match.dismissed && match.dismissalMethod)
-            battingText += ` (${match.dismissalMethod})`;
 
         let matchEconomy = "0.00";
         if (isBowling && oversToBalls(match.overs) > 0) {
@@ -333,7 +355,7 @@ function renderHistory(filteredMatches) {
                     </div>
                     <div class="header-actions">
                         <div class="match-result result-${match.result}">${match.result}</div>
-                        <button class="delete-btn" onclick="deleteMatch('${match.id}')" title="Delete match"><i class="fas fa-times"></i></button>
+                        <button class="delete-btn delete-match-btn" data-id="${match.id}" title="Delete match"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div class="match-performances">
@@ -363,6 +385,10 @@ function calculateStats(filteredMatches) {
     let totalCatches = 0,
         totalRunouts = 0;
     let resultsCounts = { Won: 0, Lost: 0, Draw: 0, Tie: 0 };
+    let fifties = 0,
+        hundreds = 0,
+        threeWickets = 0,
+        fiveWickets = 0;
 
     filteredMatches.forEach((m) => {
         totalRuns += m.runs;
@@ -404,6 +430,12 @@ function calculateStats(filteredMatches) {
 
         totalCatches += m.catches;
         totalRunouts += m.runouts;
+
+        if (m.runs >= 100) hundreds++;
+        else if (m.runs >= 50) fifties++;
+
+        if (m.wickets >= 5) fiveWickets++;
+        else if (m.wickets >= 3) threeWickets++;
     });
 
     const batAvg =
@@ -462,12 +494,22 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
         "#f97316",
     ];
     const datasets = labels.map((label, index) => {
+        // Determine if this is the first or last segment in the stack
+        const isFirst = index === 0;
+        const isLast = index === labels.length - 1;
+
         return {
             label: label,
             data: [dismissalCounts[label]],
             backgroundColor: chartColors[index % chartColors.length],
             barThickness: 18,
-            borderRadius: 9,
+            // NEW: Only round the far left and far right corners
+            borderRadius: {
+                topLeft: isFirst ? 9 : 0,
+                bottomLeft: isFirst ? 9 : 0,
+                topRight: isLast ? 9 : 0,
+                bottomRight: isLast ? 9 : 0,
+            },
             borderSkipped: false,
             borderWidth: 1,
             borderColor: "#ffffff",
@@ -517,9 +559,9 @@ function renderWinLossChart(resultsCounts, totalMatches) {
     wrapper.style.display = "block";
 
     const resultColors = {
-        Won: "#059669",
+        Won: "#2ec4b6",
         Lost: "#dc2626",
-        Draw: "#d97706",
+        Draw: "#0ea5e9",
         Tie: "#0ea5e9",
     };
 
@@ -527,13 +569,23 @@ function renderWinLossChart(resultsCounts, totalMatches) {
         (key) => resultsCounts[key] > 0,
     );
 
-    const datasets = labels.map((label) => {
+    const datasets = labels.map((label, index) => {
+        // Determine if this is the first or last segment in the stack
+        const isFirst = index === 0;
+        const isLast = index === labels.length - 1;
+
         return {
             label: label,
             data: [resultsCounts[label]],
             backgroundColor: resultColors[label],
             barThickness: 18,
-            borderRadius: 9,
+            // NEW: Only round the far left and far right corners
+            borderRadius: {
+                topLeft: isFirst ? 9 : 0,
+                bottomLeft: isFirst ? 9 : 0,
+                topRight: isLast ? 9 : 0,
+                bottomRight: isLast ? 9 : 0,
+            },
             borderSkipped: false,
             borderWidth: 1,
             borderColor: "#ffffff",
