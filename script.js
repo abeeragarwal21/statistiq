@@ -8,21 +8,24 @@ const firebaseConfig = {
     measurementId: "G-84ZWBMLG29",
 };
 
-// Initialize Firebase
+// =========================================
+// 1. INITIALIZATION & GLOBALS
+// =========================================
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
 let currentUser = null;
-
 let matches = [];
-
 let chartInstance = null;
 let winLossChartInstance = null;
-
 let isLoginMode = true;
+let statusTimeout;
 
-// DOM Elements
+// =========================================
+// 2. DOM ELEMENTS
+// =========================================
+// Form & App Elements
 const form = document.getElementById("matchForm");
 const dismissedCheckbox = document.getElementById("dismissed");
 const dismissalContainer = document.getElementById("dismissalContainer");
@@ -37,11 +40,8 @@ const authSubmitBtn = document.getElementById("authSubmitBtn");
 const toggleAuthMode = document.getElementById("toggleAuthMode");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// NEW: Status Bar Element
+// UI Elements
 const statusBar = document.getElementById("statusBar");
-let statusTimeout;
-
-// Filter & Modal Elements
 const historyFilter = document.getElementById("historyFilter");
 const dateFilterFrom = document.getElementById("dateFilterFrom");
 const dateFilterTo = document.getElementById("dateFilterTo");
@@ -50,27 +50,9 @@ const modal = document.getElementById("matchModal");
 const openModalBtn = document.getElementById("openModalBtn");
 const closeModalSpan = document.getElementsByClassName("close-modal")[0];
 
-// --- STATUS BAR LOGIC ---
-function showStatus(message, isError = true) {
-    // Set the icon and text
-    statusBar.innerHTML = isError
-        ? `<i class="fas fa-exclamation-circle"></i> ${message}`
-        : `<i class="fas fa-check-circle"></i> ${message}`;
-
-    // Set the color (red for error, green for success)
-    statusBar.className = `status-bar show ${isError ? "error" : "success"}`;
-
-    // Clear any existing timers so it doesn't disappear too fast if clicked twice
-    clearTimeout(statusTimeout);
-
-    // Hide it automatically after 4 seconds
-    statusTimeout = setTimeout(() => {
-        statusBar.classList.remove("show");
-    }, 4000);
-}
-
-// --- AUTHENTICATION LOGIC ---
-
+// =========================================
+// 3. AUTHENTICATION LOGIC
+// =========================================
 toggleAuthMode.addEventListener("click", (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
@@ -101,41 +83,35 @@ logoutBtn.addEventListener("click", () => {
     auth.signOut();
 });
 
-// The Bouncer: Listens for login/logout
+// Auth Listener
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // User logged in!
         currentUser = user;
         authOverlay.style.display = "none";
-
-        // Update header greeting
         document.querySelector(".app-header h1").innerText =
             `Hey, ${user.email.split("@")[0]}!`;
-
-        loadMatches(); // Fetch their private stats
+        loadMatches();
     } else {
-        // User logged out!
         currentUser = null;
         authOverlay.style.display = "flex";
         matches = [];
-        updateUI(); // Clear the dashboard
+        updateUI();
     }
 });
 
-// --- CLOUD DATABASE LOGIC ---
-
+// =========================================
+// 4. CLOUD DATABASE LOGIC
+// =========================================
 async function loadMatches() {
     if (!currentUser) return;
 
     try {
-        // Read from their private folder: users -> [UID] -> matches
         const snapshot = await db
             .collection("users")
             .doc(currentUser.uid)
             .collection("matches")
             .get();
         matches = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        // Sort by date descending
         matches.sort((a, b) => new Date(b.date) - new Date(a.date));
         updateUI();
     } catch (err) {
@@ -172,7 +148,6 @@ form.addEventListener("submit", async (e) => {
     };
 
     try {
-        // Save to their private folder
         await db
             .collection("users")
             .doc(currentUser.uid)
@@ -182,8 +157,7 @@ form.addEventListener("submit", async (e) => {
         dismissalContainer.style.display = "none";
         document.getElementById("date").valueAsDate = new Date();
         modal.style.display = "none";
-        loadMatches(); // Refresh data
-
+        loadMatches();
         showStatus("Match saved successfully!", false);
     } catch (err) {
         console.error("Error saving match:", err);
@@ -208,7 +182,19 @@ async function deleteMatch(id) {
     }
 }
 
-// --- UI AND STATS LOGIC (Unchanged from before) ---
+// =========================================
+// 5. EVENT LISTENERS & UI HELPERS
+// =========================================
+function showStatus(message, isError = true) {
+    statusBar.innerHTML = isError
+        ? `<i class="fas fa-exclamation-circle"></i> ${message}`
+        : `<i class="fas fa-check-circle"></i> ${message}`;
+    statusBar.className = `status-bar show ${isError ? "error" : "success"}`;
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => {
+        statusBar.classList.remove("show");
+    }, 4000);
+}
 
 dismissedCheckbox.addEventListener("change", (e) => {
     dismissalContainer.style.display = e.target.checked ? "block" : "none";
@@ -231,6 +217,12 @@ window.onclick = (e) => {
     if (e.target == modal) modal.style.display = "none";
 };
 
+// Initial state
+document.getElementById("date").valueAsDate = new Date();
+
+// =========================================
+// 6. DATA PROCESSING & RENDERING
+// =========================================
 function oversToBalls(oversStr) {
     const num = parseFloat(oversStr);
     const wholeOvers = Math.floor(num);
@@ -274,28 +266,22 @@ function updateUI() {
     document.getElementById("history-header").innerText =
         `${formatPrefix} Match History`;
 
-    // --- NEW: DATE RANGE TEXT LOGIC ---
     const fromDate = dateFilterFrom.value;
     const toDate = dateFilterTo.value;
     let dateText = "All Time";
 
     if (fromDate && toDate) {
-        // Both filters active
         const f = new Date(fromDate).toLocaleDateString("en-GB");
         const t = new Date(toDate).toLocaleDateString("en-GB");
         dateText = `${f} — ${t}`;
     } else if (fromDate) {
-        // Only "From" active
         dateText = `Since ${new Date(fromDate).toLocaleDateString("en-GB")}`;
     } else if (toDate) {
-        // Only "To" active
         dateText = `Up to ${new Date(toDate).toLocaleDateString("en-GB")}`;
     }
 
-    // Apply the text to both headings
     document.getElementById("stats-date-range").innerText = dateText;
     document.getElementById("history-date-range").innerText = dateText;
-    // ----------------------------------
 
     renderHistory(filteredMatches);
     calculateStats(filteredMatches);
@@ -332,7 +318,6 @@ function renderHistory(filteredMatches) {
             ? `${match.wickets}/${match.runsConceded} (${match.overs} ov, Econ: ${matchEconomy})`
             : "Did not bowl";
 
-        // Build the fielding string dynamically
         let fieldingParts = [];
         if (match.catches > 0) fieldingParts.push(`${match.catches}c`);
         if (match.runouts > 0) fieldingParts.push(`${match.runouts}ro`);
@@ -377,7 +362,6 @@ function calculateStats(filteredMatches) {
         bestRuns = 999;
     let totalCatches = 0,
         totalRunouts = 0;
-
     let resultsCounts = { Won: 0, Lost: 0, Draw: 0, Tie: 0 };
 
     filteredMatches.forEach((m) => {
@@ -452,6 +436,9 @@ function calculateStats(filteredMatches) {
     renderWinLossChart(resultsCounts, filteredMatches.length);
 }
 
+// =========================================
+// 7. CHART RENDERING
+// =========================================
 function renderStraightBarChart(dismissalCounts, totalDismissals) {
     const ctx = document.getElementById("dismissalChart").getContext("2d");
     const wrapper = document.getElementById("dismissalChartWrapper");
@@ -517,7 +504,6 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
     });
 }
 
-// --- NEW WIN/LOSS CHART LOGIC ---
 function renderWinLossChart(resultsCounts, totalMatches) {
     const ctx = document.getElementById("winLossChart").getContext("2d");
     const wrapper = document.getElementById("winLossChartWrapper");
@@ -530,15 +516,13 @@ function renderWinLossChart(resultsCounts, totalMatches) {
     }
     wrapper.style.display = "block";
 
-    // Map your specific CSS variable colors to the results
     const resultColors = {
-        Won: "#059669", // var(--status-win)
-        Lost: "#dc2626", // var(--status-loss)
-        Draw: "#d97706", // var(--status-draw)
-        Tie: "#0ea5e9", // Nice blue for ties
+        Won: "#059669",
+        Lost: "#dc2626",
+        Draw: "#d97706",
+        Tie: "#0ea5e9",
     };
 
-    // Only create chart sections for results you actually have
     const labels = Object.keys(resultsCounts).filter(
         (key) => resultsCounts[key] > 0,
     );
@@ -548,8 +532,8 @@ function renderWinLossChart(resultsCounts, totalMatches) {
             label: label,
             data: [resultsCounts[label]],
             backgroundColor: resultColors[label],
-            barThickness: 18, // New thickness
-            borderRadius: 9, // Perfect pill shape
+            barThickness: 18,
+            borderRadius: 9,
             borderSkipped: false,
             borderWidth: 1,
             borderColor: "#ffffff",
@@ -588,6 +572,3 @@ function renderWinLossChart(resultsCounts, totalMatches) {
         },
     });
 }
-
-// Initial set
-document.getElementById("date").valueAsDate = new Date();

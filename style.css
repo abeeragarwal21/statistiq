@@ -16,7 +16,7 @@
 }
 
 /* =========================================
-   RESET & BASE STYLES
+   1. RESET & BASE STYLES
    ========================================= */
 *,
 *::before,
@@ -48,10 +48,7 @@ body {
 }
 
 /* =========================================
-   LAYOUT & CONTAINERS
-   ========================================= */
-/* =========================================
-   LAYOUT & CONTAINERS
+   2. LAYOUT & CONTAINERS
    ========================================= */
 .container {
     width: 100%;
@@ -72,7 +69,9 @@ body {
     min-width: 0;
 }
 
-/* Header */
+/* =========================================
+   3. HEADER & TYPOGRAPHY
+   ========================================= */
 .app-header {
     background:
         linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.75)),
@@ -106,7 +105,24 @@ body {
     font-weight: 400;
 }
 
-/* Cards */
+.section-title,
+.stat-category-title {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.section-title {
+    margin: 2.25rem 0 1rem;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+/* =========================================
+   4. CARDS & STATS GRID
+   ========================================= */
 .card {
     background-color: var(--surface);
     border-radius: 8px;
@@ -124,206 +140,6 @@ body {
     align-items: center;
 }
 
-/* =========================================
-   DATE RANGE SUBTITLE
-   ========================================= */
-.date-range-subtitle {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    margin-top: -0.9rem;
-    margin-bottom: 1.5rem; /* Re-adds the space before the content starts */
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-/* =========================================
-   FILTERS
-   ========================================= */
-.filter-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--surface);
-    padding: 0.85rem 1.25rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    margin-bottom: 1.5rem;
-}
-
-.filter-controls {
-    display: flex;
-    gap: 1.5rem;
-}
-
-.filter-group,
-.filter-label,
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.filter-label {
-    font-weight: 500;
-    font-size: 0.95rem;
-    color: var(--text-muted);
-}
-
-.filter-select {
-    width: fit-content;
-}
-
-/* =========================================
-   FORMS & INPUTS
-   ========================================= */
-.form-group {
-    margin-bottom: 1.25rem;
-}
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-bottom: 0.35rem;
-    color: var(--text-muted);
-}
-
-/* Update this block to include email and password */
-input[type="text"],
-input[type="number"],
-input[type="date"],
-input[type="email"],
-input[type="password"],
-select,
-textarea {
-    width: 100%;
-    padding: 0.65rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 0.9rem;
-    background-color: var(--surface);
-    color: var(--text-main);
-    transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease;
-    font-family: inherit;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    outline: none;
-    border-color: var(--text-muted);
-    box-shadow:
-        0 0 0 2px var(--surface),
-        0 0 0 4px rgba(100, 116, 139, 0.15);
-}
-input[type="checkbox"] {
-    margin-right: 0.5rem;
-    accent-color: var(--text-muted);
-    cursor: pointer;
-}
-
-.checkbox-label {
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-/* Section Headings */
-.section-title,
-.stat-category-title {
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.section-title {
-    margin: 2.25rem 0 1rem;
-    font-size: 0.75rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.5rem;
-}
-
-form > .section-title:first-child {
-    margin-top: 0.5rem;
-}
-
-/* Buttons */
-button {
-    cursor: pointer;
-    transition: 0.15s ease;
-    font-family: inherit;
-}
-
-button.primary-btn {
-    background-color: var(--text-main);
-    color: var(--surface);
-    border: none;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: 6px;
-    width: 100%;
-    margin-top: 1.5rem;
-}
-
-button.primary-btn:hover {
-    opacity: 0.9;
-}
-
-.delete-btn {
-    background: transparent;
-    color: var(--text-muted);
-    border: none;
-    font-size: 1rem;
-}
-
-.delete-btn:hover {
-    color: var(--status-loss);
-}
-
-/* =========================================
-   LOGOUT BUTTON
-   ========================================= */
-.logout-btn {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-    color: var(--surface);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 0.85rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 6px;
-    cursor: pointer;
-    backdrop-filter: blur(4px); /* Glassmorphism blur effect */
-    -webkit-backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: all 0.2s ease;
-}
-
-.logout-btn:hover {
-    background-color: rgba(255, 255, 255, 0.15); /* Slightly brighter glass */
-    border-color: rgba(255, 255, 255, 0.3); /* Slightly sharper border */
-    color: #fca5a5; /* Soft pastel red text */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Gentle, normal shadow */
-}
-
-/* =========================================
-   STATS GRID & CHART BOX
-   ========================================= */
 .stat-category-title {
     font-size: 0.85rem;
     margin: 2.25rem 0 1rem 0;
@@ -372,32 +188,55 @@ button.primary-btn:hover {
     font-weight: 500;
 }
 
-/* Beautiful Chart Wrapper fitting the Stat Boxes */
-#dismissalChartWrapper {
-    background: var(--bg-color);
-    border-radius: 6px;
-    padding: 1rem;
-    margin-top: 1.25rem;
+/* =========================================
+   5. FILTERS & DATE RANGE
+   ========================================= */
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--surface);
+    padding: 0.85rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
 }
 
-.chart-header {
-    font-size: 0.75rem;
+.filter-controls {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.filter-group,
+.filter-label,
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-weight: 500;
+    font-size: 0.95rem;
     color: var(--text-muted);
-    font-weight: 600;
+}
+
+.filter-select {
+    width: fit-content;
+}
+
+.date-range-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: -0.9rem;
+    margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    text-align: center;
-    margin-bottom: 0.75rem;
-}
-
-.chart-container {
-    position: relative;
-    height: 45px;
-    width: 100%;
 }
 
 /* =========================================
-   MATCH HISTORY
+   6. MATCH HISTORY
    ========================================= */
 .match-list {
     display: flex;
@@ -451,10 +290,12 @@ button.primary-btn:hover {
     color: var(--status-win);
     background: var(--status-win-bg);
 }
+
 .result-Lost {
     color: var(--status-loss);
     background: var(--status-loss-bg);
 }
+
 .result-Draw,
 .result-Tie {
     color: var(--status-draw);
@@ -494,8 +335,162 @@ button.primary-btn:hover {
 }
 
 /* =========================================
-   MODAL & FLOATING ACTION BUTTON
+   7. CHARTS
    ========================================= */
+#dismissalChartWrapper {
+    background: var(--bg-color);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 1.25rem;
+}
+
+.chart-header {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 45px;
+    width: 100%;
+}
+
+/* =========================================
+   8. FORMS & INPUTS
+   ========================================= */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+form > .section-title:first-child {
+    margin-top: 0.5rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: var(--surface);
+    color: var(--text-main);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+    font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--text-muted);
+    box-shadow:
+        0 0 0 2px var(--surface),
+        0 0 0 4px rgba(100, 116, 139, 0.15);
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
+    accent-color: var(--text-muted);
+    cursor: pointer;
+}
+
+.checkbox-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* =========================================
+   9. BUTTONS
+   ========================================= */
+button {
+    cursor: pointer;
+    transition: 0.15s ease;
+    font-family: inherit;
+}
+
+button.primary-btn {
+    background-color: var(--text-main);
+    color: var(--surface);
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 6px;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+button.primary-btn:hover {
+    opacity: 0.9;
+}
+
+.delete-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-size: 1rem;
+}
+
+.delete-btn:hover {
+    color: var(--status-loss);
+}
+
+.logout-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fca5a5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .fab {
     position: fixed;
     bottom: 2rem;
@@ -518,6 +513,9 @@ button.primary-btn:hover {
     transform: scale(1.05);
 }
 
+/* =========================================
+   10. MODALS & OVERLAYS
+   ========================================= */
 .modal {
     display: none;
     position: fixed;
@@ -557,19 +555,12 @@ button.primary-btn:hover {
     color: var(--status-loss);
 }
 
-/* =========================================
-   LOGIN OVERLAY STYLES
-   ========================================= */
-/* =========================================
-   MODERN LOGIN OVERLAY STYLES
-   ========================================= */
 .auth-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* Dark, sleek, blurred background */
     background-color: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -584,13 +575,12 @@ button.primary-btn:hover {
     width: 100%;
     max-width: 420px;
     margin: 1rem;
-    padding: 2.5rem 2rem; /* Give it more breathing room inside */
-    border-radius: 12px; /* Slightly rounder edges for a premium feel */
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Deep, soft shadow */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Specific tweaks for the text inside the auth card */
 .auth-card h2 {
     font-size: 1.75rem;
     font-weight: 700;
@@ -599,7 +589,7 @@ button.primary-btn:hover {
 }
 
 .auth-card .form-group {
-    text-align: left; /* Ensure labels align left */
+    text-align: left;
     margin-bottom: 1.25rem;
 }
 
@@ -614,20 +604,20 @@ button.primary-btn:hover {
 }
 
 /* =========================================
-   STATUS BAR (TOAST NOTIFICATIONS)
+   11. STATUS BAR (TOAST)
    ========================================= */
 .status-bar {
     position: fixed;
     bottom: 2rem;
     left: 50%;
-    transform: translateX(-50%) translateY(100px); /* Hidden off-screen */
+    transform: translateX(-50%) translateY(100px);
     background-color: var(--text-main);
     color: var(--surface);
     padding: 0.85rem 1.5rem;
     border-radius: 8px;
     font-size: 0.95rem;
     font-weight: 500;
-    z-index: 5000; /* High enough to show over modals and auth */
+    z-index: 5000;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     opacity: 0;
     pointer-events: none;
@@ -644,7 +634,6 @@ button.primary-btn:hover {
     opacity: 1;
 }
 
-/* Modifier classes for different types of messages */
 .status-bar.error {
     background-color: var(--status-loss);
 }
