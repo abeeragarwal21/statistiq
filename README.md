@@ -17,11 +17,12 @@ An app to track your cricket season so far, with statistics and graphs to manage
 - Not outs
 - Total 4s
 - Total 6s
-- 4s and 6s in match history card
 - Total Ducks
 - Total no balls
 - Total wides
 - Move 50s, 100s under batting and 5wickets under bowling
+- Display bowling figures as overs-maidens-runs-wickets
+- Display batting as Runs (numx6, numx4 SR: strike rate)
 
 - Remove 3 wicket haul count
 - Create a landing page
