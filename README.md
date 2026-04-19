@@ -10,7 +10,11 @@ An app to track your cricket season so far, with statistics and graphs to manage
 
 ## Roadmap
 
-### To Be Added
+### Bugfixes
+
+- Stop scrolling when modal window open for adding new game
+
+### Features to be added
 
 - Batting innings
 - Bowling innings
@@ -24,6 +28,7 @@ An app to track your cricket season so far, with statistics and graphs to manage
 - Display bowling figures as overs-maidens-runs-wickets
 - Display batting as Runs (numx6, numx4 SR: strike rate)
 - Filter matches by team
+- Add all possible formats, include option for 2 innings for multi-day games
 
 - Remove 3 wicket haul count
 - Create a landing page
