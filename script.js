@@ -88,12 +88,14 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         currentUser = user;
         authOverlay.style.display = "none";
+        document.body.classList.remove("no-scroll"); // ENABLE SCROLLING when logged in
         document.querySelector(".app-header h1").innerText =
             `Hey, ${user.email.split("@")[0]}!`;
         loadMatches();
     } else {
         currentUser = null;
         authOverlay.style.display = "flex";
+        document.body.classList.add("no-scroll"); // DISABLE SCROLLING when logged out
         matches = [];
         updateUI();
     }
