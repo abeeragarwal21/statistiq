@@ -11,20 +11,87 @@
             href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
-
         <link
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
             rel="stylesheet"
         />
-
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <div id="authOverlay" class="auth-overlay">
+            <div class="card auth-card">
+                <h2 style="margin-bottom: 0.5rem; text-align: center">
+                    Cricket Tracker
+                </h2>
+                <p
+                    style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        margin-bottom: 1.5rem;
+                        font-size: 0.9rem;
+                    "
+                >
+                    Sign in to your dashboard
+                </p>
+                <form id="authForm">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="authEmail" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            id="authPassword"
+                            required
+                            minlength="6"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="authSubmitBtn"
+                    >
+                        Log In
+                    </button>
+                    <p
+                        style="
+                            text-align: center;
+                            margin-top: 1rem;
+                            font-size: 0.85rem;
+                            color: var(--text-muted);
+                        "
+                    >
+                        Don't have an account?
+                        <a
+                            href="#"
+                            id="toggleAuthMode"
+                            style="color: var(--text-main); font-weight: 600"
+                            >Sign Up</a
+                        >
+                    </p>
+                </form>
+            </div>
+        </div>
+
         <div class="container">
             <header class="app-header">
-                <h1>Hey, Abeer!</h1>
+                <button
+                    id="logoutBtn"
+                    class="delete-btn"
+                    style="
+                        position: absolute;
+                        top: 1.5rem;
+                        right: 1.5rem;
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                    "
+                >
+                    Log Out
+                </button>
+                <h1>Hey there!</h1>
                 <p>Your personal performance dashboard</p>
             </header>
 
@@ -32,8 +99,7 @@
                 <div class="filter-controls">
                     <div class="filter-group">
                         <div class="filter-label">
-                            <i class="fas fa-filter"></i>
-                            Format:
+                            <i class="fas fa-filter"></i> Format:
                         </div>
                         <select id="historyFilter" class="filter-select">
                             <option value="All">All</option>
@@ -43,11 +109,9 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-
                     <div class="filter-group">
                         <div class="filter-label">
-                            <i class="fas fa-calendar-alt"></i>
-                            From:
+                            <i class="fas fa-calendar-alt"></i> From:
                         </div>
                         <input
                             type="date"
@@ -55,11 +119,9 @@
                             class="filter-select"
                         />
                     </div>
-
                     <div class="filter-group">
                         <div class="filter-label">
-                            <i class="fas fa-calendar-alt"></i>
-                            To:
+                            <i class="fas fa-calendar-alt"></i> To:
                         </div>
                         <input
                             type="date"
@@ -68,7 +130,6 @@
                         />
                     </div>
                 </div>
-
                 <button
                     id="clearFiltersBtn"
                     class="delete-btn"
@@ -181,33 +242,23 @@
                 <form id="matchForm">
                     <div class="section-title">Game Information</div>
                     <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="date" required />
+                        <label>Date</label
+                        ><input type="date" id="date" required />
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Your Team</label>
-                            <input
-                                type="text"
-                                id="team"
-                                required
-                                placeholder="e.g. LWC 15A"
-                            />
+                            <label>Your Team</label
+                            ><input type="text" id="team" required />
                         </div>
                         <div class="form-group">
-                            <label>Opponent</label>
-                            <input
-                                type="text"
-                                id="opponent"
-                                required
-                                placeholder="e.g. Shiplake"
-                            />
+                            <label>Opponent</label
+                            ><input type="text" id="opponent" required />
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Format</label>
-                            <select id="format">
+                            <label>Format</label
+                            ><select id="format">
                                 <option value="T20">T20</option>
                                 <option value="40 over">40 over</option>
                                 <option value="50 over">50 over</option>
@@ -215,8 +266,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Result</label>
-                            <select id="result">
+                            <label>Result</label
+                            ><select id="result">
                                 <option value="Won">Won</option>
                                 <option value="Lost">Lost</option>
                                 <option value="Draw">Draw</option>
@@ -228,12 +279,12 @@
                     <div class="section-title">Batting</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Runs Scored</label>
-                            <input type="number" id="runs" min="0" value="0" />
+                            <label>Runs Scored</label
+                            ><input type="number" id="runs" min="0" value="0" />
                         </div>
                         <div class="form-group">
-                            <label>Balls Faced</label>
-                            <input
+                            <label>Balls Faced</label
+                            ><input
                                 type="number"
                                 id="ballsFaced"
                                 min="0"
@@ -243,27 +294,37 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Fours</label>
-                            <input type="number" id="fours" min="0" value="0" />
+                            <label>Fours</label
+                            ><input
+                                type="number"
+                                id="fours"
+                                min="0"
+                                value="0"
+                            />
                         </div>
                         <div class="form-group">
-                            <label>Sixes</label>
-                            <input type="number" id="sixes" min="0" value="0" />
+                            <label>Sixes</label
+                            ><input
+                                type="number"
+                                id="sixes"
+                                min="0"
+                                value="0"
+                            />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="dismissed" /> Were you
-                            dismissed?
-                        </label>
+                        <label class="checkbox-label"
+                            ><input type="checkbox" id="dismissed" /> Were you
+                            dismissed?</label
+                        >
                     </div>
                     <div
                         class="form-group"
                         id="dismissalContainer"
                         style="display: none"
                     >
-                        <label>Dismissal Method</label>
-                        <select id="dismissalMethod">
+                        <label>Dismissal Method</label
+                        ><select id="dismissalMethod">
                             <option value="">Select dismissal...</option>
                             <option value="Bowled">Bowled</option>
                             <option value="Caught">Caught</option>
@@ -287,19 +348,18 @@
                     <div class="section-title">Bowling</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Overs Bowled</label>
-                            <input
+                            <label>Overs Bowled</label
+                            ><input
                                 type="number"
                                 id="overs"
                                 step="0.1"
                                 min="0"
                                 value="0"
-                                placeholder="e.g. 4.2"
                             />
                         </div>
                         <div class="form-group">
-                            <label>Maidens</label>
-                            <input
+                            <label>Maidens</label
+                            ><input
                                 type="number"
                                 id="maidens"
                                 min="0"
@@ -309,8 +369,8 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Runs Conceded</label>
-                            <input
+                            <label>Runs Conceded</label
+                            ><input
                                 type="number"
                                 id="runsConceded"
                                 min="0"
@@ -318,8 +378,8 @@
                             />
                         </div>
                         <div class="form-group">
-                            <label>Wickets</label>
-                            <input
+                            <label>Wickets</label
+                            ><input
                                 type="number"
                                 id="wickets"
                                 min="0"
@@ -331,8 +391,8 @@
                     <div class="section-title">Fielding & Extras</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Catches</label>
-                            <input
+                            <label>Catches</label
+                            ><input
                                 type="number"
                                 id="catches"
                                 min="0"
@@ -340,8 +400,8 @@
                             />
                         </div>
                         <div class="form-group">
-                            <label>Run Outs</label>
-                            <input
+                            <label>Run Outs</label
+                            ><input
                                 type="number"
                                 id="runouts"
                                 min="0"
@@ -351,17 +411,14 @@
                     </div>
 
                     <div class="form-group" style="margin-top: 1rem">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="captain" /> Captain?
-                        </label>
+                        <label class="checkbox-label"
+                            ><input type="checkbox" id="captain" />
+                            Captain?</label
+                        >
                     </div>
                     <div class="form-group">
-                        <label>Match Notes</label>
-                        <textarea
-                            id="notes"
-                            rows="2"
-                            placeholder="Great inswinging yorker..."
-                        ></textarea>
+                        <label>Match Notes</label
+                        ><textarea id="notes" rows="2"></textarea>
                     </div>
 
                     <button type="submit" class="primary-btn">
@@ -371,6 +428,9 @@
             </div>
         </div>
 
+        <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
         <script src="script.js"></script>
     </body>
 </html>

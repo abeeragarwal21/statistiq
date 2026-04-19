@@ -47,9 +47,9 @@ body {
    LAYOUT & CONTAINERS
    ========================================= */
 .container {
-    width: 1350px;
     margin: 1rem auto;
     padding: 0 0.5rem;
+    width: 90vw;
 }
 
 .content-grid {
@@ -167,9 +167,12 @@ label {
     color: var(--text-muted);
 }
 
+/* Update this block to include email and password */
 input[type="text"],
 input[type="number"],
 input[type="date"],
+input[type="email"],
+input[type="password"],
 select,
 textarea {
     width: 100%;
@@ -178,7 +181,6 @@ textarea {
     border-radius: 6px;
     font-size: 0.9rem;
     background-color: var(--surface);
-    font-family: inherit;
     color: var(--text-main);
     transition:
         border-color 0.15s ease,
@@ -194,7 +196,6 @@ textarea:focus {
         0 0 0 2px var(--surface),
         0 0 0 4px rgba(100, 116, 139, 0.15);
 }
-
 input[type="checkbox"] {
     margin-right: 0.5rem;
     accent-color: var(--text-muted);
@@ -494,4 +495,60 @@ button.primary-btn:hover {
 
 .close-modal:hover {
     color: var(--status-loss);
+}
+
+/* =========================================
+   LOGIN OVERLAY STYLES
+   ========================================= */
+/* =========================================
+   MODERN LOGIN OVERLAY STYLES
+   ========================================= */
+.auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Dark, sleek, blurred background */
+    background-color: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-card {
+    background-color: var(--surface);
+    width: 100%;
+    max-width: 420px;
+    margin: 1rem;
+    padding: 2.5rem 2rem; /* Give it more breathing room inside */
+    border-radius: 12px; /* Slightly rounder edges for a premium feel */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Deep, soft shadow */
+}
+
+/* Specific tweaks for the text inside the auth card */
+.auth-card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+}
+
+.auth-card .form-group {
+    text-align: left; /* Ensure labels align left */
+    margin-bottom: 1.25rem;
+}
+
+.auth-card .primary-btn {
+    margin-top: 2rem;
+    padding: 0.85rem;
+    font-size: 1rem;
+}
+
+.auth-card a:hover {
+    text-decoration: underline;
 }
