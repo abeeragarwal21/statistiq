@@ -23,6 +23,7 @@ An app to track your cricket season so far, with statistics and graphs to manage
 - Move 50s, 100s under batting and 5wickets under bowling
 - Display bowling figures as overs-maidens-runs-wickets
 - Display batting as Runs (numx6, numx4 SR: strike rate)
+- Filter matches by team
 
 - Remove 3 wicket haul count
 - Create a landing page
