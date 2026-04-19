@@ -1,0 +1,497 @@
+:root {
+    /* Color Palette */
+    --bg-color: #f8fafc;
+    --surface: #ffffff;
+    --text-main: #011627;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+
+    /* Status Colors */
+    --status-win: #059669;
+    --status-win-bg: #ecfdf5;
+    --status-loss: #dc2626;
+    --status-loss-bg: #fef2f2;
+    --status-draw: #d97706;
+    --status-draw-bg: #fffbeb;
+}
+
+/* =========================================
+   RESET & BASE STYLES
+   ========================================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding-bottom: 40px;
+    font-family:
+        "Inter",
+        system-ui,
+        -apple-system,
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Fallback for hardcoded HTML styles */
+[style*="color: var(--primary)"] {
+    color: var(--text-muted) !important;
+}
+
+/* =========================================
+   LAYOUT & CONTAINERS
+   ========================================= */
+.container {
+    width: 1350px;
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+/* Header */
+.app-header {
+    background:
+        linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.75)),
+        url("user-bg.png") center/cover no-repeat;
+    color: var(--surface);
+    padding: 2rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.app-header p {
+    color: #cbd5e1;
+    font-weight: 400;
+}
+
+/* Cards */
+.card {
+    background-color: var(--surface);
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.card-header {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================================
+   FILTERS
+   ========================================= */
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--surface);
+    padding: 0.85rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.filter-group,
+.filter-label,
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.filter-select {
+    width: fit-content;
+}
+
+/* =========================================
+   FORMS & INPUTS
+   ========================================= */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: var(--surface);
+    font-family: inherit;
+    color: var(--text-main);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--text-muted);
+    box-shadow:
+        0 0 0 2px var(--surface),
+        0 0 0 4px rgba(100, 116, 139, 0.15);
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
+    accent-color: var(--text-muted);
+    cursor: pointer;
+}
+
+.checkbox-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Section Headings */
+.section-title,
+.stat-category-title {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.section-title {
+    margin: 2.25rem 0 1rem;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+form > .section-title:first-child {
+    margin-top: 0.5rem;
+}
+
+/* Buttons */
+button {
+    cursor: pointer;
+    transition: 0.15s ease;
+    font-family: inherit;
+}
+
+button.primary-btn {
+    background-color: var(--text-main);
+    color: var(--surface);
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 6px;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+button.primary-btn:hover {
+    opacity: 0.9;
+}
+
+.delete-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    font-size: 1rem;
+}
+
+.delete-btn:hover {
+    color: var(--status-loss);
+}
+
+/* =========================================
+   STATS GRID & CHART BOX
+   ========================================= */
+.stat-category-title {
+    font-size: 0.85rem;
+    margin: 2.25rem 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-header + .stat-category-title {
+    margin-top: 0.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-box {
+    background: var(--bg-color);
+    padding: 1rem 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+/* Beautiful Chart Wrapper fitting the Stat Boxes */
+#dismissalChartWrapper {
+    background: var(--bg-color);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 1.25rem;
+}
+
+.chart-header {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 45px;
+    width: 100%;
+}
+
+/* =========================================
+   MATCH HISTORY
+   ========================================= */
+.match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.match-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem;
+    background: var(--surface);
+}
+
+.match-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--bg-color);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.match-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.match-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+.match-result {
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.result-Won {
+    color: var(--status-win);
+    background: var(--status-win-bg);
+}
+.result-Lost {
+    color: var(--status-loss);
+    background: var(--status-loss-bg);
+}
+.result-Draw,
+.result-Tie {
+    color: var(--status-draw);
+    background: var(--status-draw-bg);
+}
+
+.match-performances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.perf-section strong {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.perf-section i {
+    color: var(--text-muted);
+    width: 16px;
+    margin-right: 4px;
+    opacity: 0.7;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+    background: var(--bg-color);
+    border-radius: 6px;
+}
+
+/* =========================================
+   MODAL & FLOATING ACTION BUTTON
+   ========================================= */
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--text-main);
+    color: var(--surface);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fab:hover {
+    transform: scale(1.05);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(1, 22, 39, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--surface);
+    width: 70vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: var(--status-loss);
+}
