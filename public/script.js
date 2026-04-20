@@ -390,7 +390,7 @@ function renderHistory(filteredMatches) {
         return;
     }
 
-    filteredMatches.forEach((match) => {
+    filteredMatches.forEach((match, index) => {
         // Helpers to format the text
         const getBatStr = (runs, balls, fours, sixes, dismissed, method) => {
             if (balls === 0 && runs === 0 && !dismissed) return null;
@@ -475,7 +475,7 @@ function renderHistory(filteredMatches) {
 
         const html = `
             <div class="match-card">
-                <div class="match-card-header">
+                <div class="match-card-header" style="animation-delay: ${index * 0.05}s;">
                     <div>
                         <div class="match-title">${titleText} ${captainBadgeHtml}</div>
                         <div class="match-date">${new Date(match.date).toLocaleDateString("en-GB")} | ${match.format}</div>
