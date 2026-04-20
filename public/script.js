@@ -732,13 +732,16 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
     wrapper.style.display = "block";
 
     const chartColors = [
-        "#ff9f1c",
-        "#2ec4b6",
-        "#e71d36",
-        "#011627",
-        "#a855f7",
-        "#3b82f6",
-        "#f97316",
+        "#fbbf24", // Premium Gold
+        "#3b82f6", // Bright Blue
+        "#8b5cf6", // Tropical Violet
+        "#10b981", // Emerald Green
+        "#f59e0b", // Amber
+        "#ef4444", // Soft Red
+        "#06b6d4", // Cyan
+        "#f97316", // Orange
+        "#6366f1", // Indigo
+        "#ec4899", // Pink/Magenta
     ];
     const datasets = labels.map((label, index) => {
         // Determine if this is the first or last segment in the stack
@@ -809,7 +812,7 @@ function renderWinLossChart(resultsCounts, totalMatches) {
         Won: "#2ec4b6",
         Lost: "#dc2626",
         Draw: "#0ea5e9",
-        Tie: "#0ea5e9",
+        Tie: "#a855f7",
     };
 
     const labels = Object.keys(resultsCounts).filter(
