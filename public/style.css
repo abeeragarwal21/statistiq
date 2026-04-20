@@ -19,6 +19,50 @@
    ANIMATIONS
    ========================================= */
 
+/* Header Drop Down */
+@keyframes dropDownFade {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card Slide Up */
+@keyframes slideUpSection {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 1. Header Animation */
+.app-header {
+    /* Update this if your header uses a different class like .header */
+    animation: dropDownFade 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+/* 2. Performance Stats Animation (Delays slightly so header loads first) */
+.animate-stats-card {
+    opacity: 0; /* Hide initially so it doesn't blink before animating */
+    animation: slideUpSection 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0.15s
+        forwards;
+}
+
+/* 3. Match History Animation (Delays even more for the cascade effect) */
+.animate-history-card {
+    opacity: 0;
+    animation: slideUpSection 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s
+        forwards;
+}
+
 /* 1. Modal Pop & Fade */
 @keyframes popIn {
     0% {
