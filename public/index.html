@@ -507,12 +507,12 @@
                                 />
                             </div>
                         </div>
-                        <div
+                        <label
                             class="form-group checkbox-label"
                             style="margin-top: 0.5rem"
                         >
                             <input type="checkbox" id="dismissed2" /> Dismissed?
-                        </div>
+                        </label>
                         <div
                             class="form-group"
                             id="dismissalContainer2"
@@ -707,15 +707,19 @@
                         </div>
                     </div>
 
-                    <div
+                    <label
                         class="form-group checkbox-label"
                         style="margin-top: 1rem"
                     >
                         <input type="checkbox" id="isCaptain" /> Match Captain?
-                    </div>
+                    </label>
                     <div class="form-group">
                         <label>Match Notes</label
-                        ><textarea id="notes" rows="2"></textarea>
+                        ><textarea
+                            id="notes"
+                            rows="2"
+                            maxlength="300"
+                        ></textarea>
                     </div>
 
                     <button type="submit" class="primary-btn">

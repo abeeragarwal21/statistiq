@@ -63,6 +63,7 @@ toggleAuthMode.addEventListener("click", (e) => {
 
 authForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    console.log("ENTER KEY DETECTED - FORM SUBMITTING!");
     const email = authEmail.value;
     const password = authPassword.value;
 
@@ -77,6 +78,32 @@ authForm.addEventListener("submit", async (e) => {
         authForm.reset();
     } catch (err) {
         showStatus(err.message, true);
+    }
+});
+
+function escapeHTML(str) {
+    if (str === null || str === undefined) return "";
+    return str
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// Global Event Listener for the Enter Key
+document.addEventListener("keydown", (e) => {
+    // Check if the key pressed was Enter
+    if (e.key === "Enter") {
+        // Check if the user is currently typing in the Email or Password field
+        if (e.target.id === "authEmail" || e.target.id === "authPassword") {
+            e.preventDefault(); // Stop any weird default browser behavior
+            console.log("Global Enter detected! Forcing click...");
+
+            // Physically trigger the button click
+            document.getElementById("authSubmitBtn").click();
+        }
     }
 });
 
@@ -464,7 +491,7 @@ function renderHistory(filteredMatches) {
         if (match.stumpings > 0) fieldingParts.push(`${match.stumpings}st`);
         let fieldingStr = fieldingParts.join(", ");
 
-        let titleText = `${match.team} vs ${match.opponent}`;
+        let titleText = `${escapeHTML(match.team)} vs ${escapeHTML(match.opponent)}`;
         if (match.innings && match.innings !== "Only") {
             titleText += ` (${match.innings} Innings)`;
         }
@@ -490,7 +517,7 @@ function renderHistory(filteredMatches) {
                     <div class="perf-section"><strong>Bowling</strong><span>${bowlingText}</span></div>
                     ${fieldingParts.length > 0 ? `<div class="perf-section"><strong>Fielding</strong><span>${fieldingStr}</span></div>` : ""}
                 </div>
-                ${match.notes ? `<div style="margin-top: 12px; padding-top: 10px; font-size: 0.85rem; color: var(--text-muted); font-style: italic;"><i class="fas fa-comment-dots" style="color: var(--text-muted); margin-right: 5px; width: 16px; text-align: center;"></i> "${match.notes}"</div>` : ""}
+                ${match.notes ? `<div style="margin-top: 12px; padding-top: 10px; font-size: 0.85rem; color: var(--text-muted); font-style: italic;"><i class="fas fa-comment-dots" style="color: var(--text-muted); margin-right: 5px; width: 16px; text-align: center;"></i> "${escapeHTML(match.notes)}"</div>` : ""}
             </div>
         `;
         matchListEl.insertAdjacentHTML("beforeend", html);
