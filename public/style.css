@@ -11,7 +11,7 @@
     --status-win-bg: #ecfdf5;
     --status-loss: #dc2626;
     --status-loss-bg: #fef2f2;
-    --status-draw: #d97706;
+    --status-draw: #0ea5e9;
     --status-draw-bg: #fffbeb;
 }
 
@@ -226,10 +226,10 @@ body.no-scroll {
 }
 
 .date-range-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 500;
-    margin-top: -0.9rem;
+    margin-top: -0.7rem;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -322,6 +322,22 @@ body.no-scroll {
 .result-Tie {
     color: var(--status-draw);
     background: var(--status-draw-bg);
+}
+
+/* =========================================
+   CAPTAINCY BADGE
+   ========================================= */
+.captain-badge {
+    background: var(--status-draw); /* Matches your premium gold theme */
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .match-performances {

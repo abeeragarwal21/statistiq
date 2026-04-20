@@ -136,6 +136,15 @@
                             class="filter-select"
                         />
                     </div>
+                    <div class="filter-group">
+                        <div class="filter-label">
+                            <i class="fas fa-copyright"></i> Role:
+                        </div>
+                        <select id="captainFilter" class="filter-select">
+                            <option value="All">All Roles</option>
+                            <option value="Captain">Captain Only</option>
+                        </select>
+                    </div>
                 </div>
                 <button
                     id="clearFiltersBtn"
@@ -153,7 +162,7 @@
             <div class="content-grid">
                 <div class="card" style="height: fit-content">
                     <div class="card-header" id="stats-header">
-                        All Formats Performance Stats
+                        Performance Stats
                     </div>
                     <div id="stats-date-range" class="date-range-subtitle">
                         All Time
@@ -295,7 +304,7 @@
 
                 <div class="card">
                     <div class="card-header" id="history-header">
-                        All Formats Match History
+                        Match History
                     </div>
                     <div id="history-date-range" class="date-range-subtitle">
                         All time
@@ -695,11 +704,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-top: 1rem">
-                        <label class="checkbox-label"
-                            ><input type="checkbox" id="captain" />
-                            Captain?</label
-                        >
+                    <div
+                        class="form-group checkbox-label"
+                        style="margin-top: 1rem"
+                    >
+                        <input type="checkbox" id="isCaptain" /> Match Captain?
                     </div>
                     <div class="form-group">
                         <label>Match Notes</label

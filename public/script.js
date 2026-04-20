@@ -45,6 +45,7 @@ const statusBar = document.getElementById("statusBar");
 const historyFilter = document.getElementById("historyFilter");
 const dateFilterFrom = document.getElementById("dateFilterFrom");
 const dateFilterTo = document.getElementById("dateFilterTo");
+const captainFilter = document.getElementById("captainFilter"); // Add this with your other filters
 const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 const modal = document.getElementById("matchModal");
 const openModalBtn = document.getElementById("openModalBtn");
@@ -149,7 +150,7 @@ form.addEventListener("submit", async (e) => {
             parseInt(document.getElementById("droppedCatches").value) || 0,
         runouts: parseInt(document.getElementById("runouts").value) || 0,
         stumpings: parseInt(document.getElementById("stumpings").value) || 0,
-        captain: document.getElementById("captain").checked,
+        isCaptain: document.getElementById("isCaptain").checked, // NEW
         notes: document.getElementById("notes").value,
 
         isMultiDay:
@@ -187,6 +188,7 @@ form.addEventListener("submit", async (e) => {
         dismissalContainer.style.display = "none";
         document.getElementById("date").valueAsDate = new Date();
         modal.style.display = "none";
+        document.body.classList.remove("no-scroll");
         loadMatches();
         showStatus("Match saved successfully!", false);
     } catch (err) {
@@ -259,11 +261,13 @@ document.getElementById("dismissed2").addEventListener("change", (e) => {
 historyFilter.addEventListener("change", updateUI);
 dateFilterFrom.addEventListener("change", updateUI);
 dateFilterTo.addEventListener("change", updateUI);
+captainFilter.addEventListener("change", updateUI);
 
 clearFiltersBtn.addEventListener("click", () => {
     historyFilter.value = "All";
     dateFilterFrom.value = "";
     dateFilterTo.value = "";
+    captainFilter.value = "All"; // NEW
     updateUI();
 });
 
@@ -311,6 +315,7 @@ function getFilteredMatches() {
     const selectedFormat = historyFilter.value;
     const fromDate = dateFilterFrom.value;
     const toDate = dateFilterTo.value;
+    const selectedCaptain = captainFilter.value;
 
     return matches.filter((m) => {
         const formatMatch =
@@ -329,7 +334,14 @@ function getFilteredMatches() {
             tDate.setHours(0, 0, 0, 0);
             dateMatch = dateMatch && matchDate <= tDate;
         }
-        return formatMatch && dateMatch;
+
+        // NEW: Captaincy Check
+        let captainMatch = true;
+        if (selectedCaptain === "Captain") {
+            captainMatch = m.isCaptain === true;
+        }
+
+        return formatMatch && dateMatch && captainMatch;
     });
 }
 
@@ -338,14 +350,10 @@ function updateUI() {
     const formatPrefix =
         historyFilter.value === "All" ? "All Formats" : historyFilter.value;
 
-    document.getElementById("stats-header").innerText =
-        `${formatPrefix} Performance Stats`;
-    document.getElementById("history-header").innerText =
-        `${formatPrefix} Match History`;
-
+    // 2. Figure out the Date string first
     const fromDate = dateFilterFrom.value;
     const toDate = dateFilterTo.value;
-    let dateText = "All Time";
+    let dateText = "All Time"; // Default to All Time
 
     if (fromDate && toDate) {
         const f = new Date(fromDate).toLocaleDateString("en-GB");
@@ -357,6 +365,13 @@ function updateUI() {
         dateText = `Up to ${new Date(toDate).toLocaleDateString("en-GB")}`;
     }
 
+    // 3. Tag on the captaincy if needed
+    dateText += ` | ${formatPrefix}`;
+    if (captainFilter.value === "Captain") {
+        dateText += " | as captain";
+    }
+
+    // 4. Update the DOM elements
     document.getElementById("stats-date-range").innerText = dateText;
     document.getElementById("history-date-range").innerText = dateText;
 
@@ -366,7 +381,7 @@ function updateUI() {
 
 function renderHistory(filteredMatches) {
     document.getElementById("history-header").innerText =
-        `${historyFilter.value === "All" ? "All Formats" : historyFilter.value} Match History (${filteredMatches.length} Matches)`;
+        `Match History (${filteredMatches.length} Matches)`;
 
     matchListEl.innerHTML = "";
     if (filteredMatches.length === 0) {
@@ -449,11 +464,20 @@ function renderHistory(filteredMatches) {
         if (match.stumpings > 0) fieldingParts.push(`${match.stumpings}st`);
         let fieldingStr = fieldingParts.join(", ");
 
+        let titleText = `${match.team} vs ${match.opponent}`;
+        if (match.innings && match.innings !== "Only") {
+            titleText += ` (${match.innings} Innings)`;
+        }
+
+        let captainBadgeHtml = match.isCaptain
+            ? `<span class="captain-badge">CAPT</span>`
+            : "";
+
         const html = `
             <div class="match-card">
                 <div class="match-card-header">
                     <div>
-                        <div class="match-title">${match.team} vs ${match.opponent}</div>
+                        <div class="match-title">${titleText} ${captainBadgeHtml}</div>
                         <div class="match-date">${new Date(match.date).toLocaleDateString("en-GB")} | ${match.format}</div>
                     </div>
                     <div class="header-actions">
