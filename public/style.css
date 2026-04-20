@@ -174,11 +174,6 @@ body.no-scroll {
         box-shadow 0.15s ease;
 }
 
-.stat-box:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
 .stat-value {
     font-size: 1.35rem;
     font-weight: 700;
@@ -248,7 +243,7 @@ body.no-scroll {
     flex-direction: column;
     gap: 1.5rem;
     /* NEW: Controls the height and scrolling */
-    max-height: 80vh; /* Limits the list to 70% of the screen height */
+    max-height: 100vh;
     overflow-y: auto; /* Turns on vertical scrolling */
     padding-right: 0.5rem; /* Adds breathing room so the scrollbar doesn't touch the cards */
 }
@@ -331,9 +326,18 @@ body.no-scroll {
 
 .match-performances {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+    /* CHANGED: Forces the stats to stack vertically instead of side-by-side */
+    flex-direction: column;
+    /* CHANGED: Reduced the gap slightly so the card doesn't get too tall */
+    gap: 0.85rem;
     font-size: 0.9rem;
+}
+
+.perf-section {
+    /* NEW: Puts the label and the text side-by-side for a cleaner look */
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .perf-section strong {
@@ -342,14 +346,7 @@ body.no-scroll {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
-}
-
-.perf-section i {
-    color: var(--text-muted);
-    width: 16px;
-    margin-right: 4px;
-    opacity: 0.7;
+    /* REMOVED: margin-bottom (handled by the gap above now) */
 }
 
 .empty-state {
@@ -365,10 +362,12 @@ body.no-scroll {
    7. CHARTS
    ========================================= */
 #dismissalChartWrapper {
+    grid-column: 1 / -1; /* NEW: Forces it to span the entire row */
+    width: 100%; /* NEW: Ensures it stretches completely */
     background: var(--bg-color);
     border-radius: 6px;
     padding: 1rem;
-    margin-top: 1.25rem;
+    margin-top: 0rem;
 }
 
 .chart-header {

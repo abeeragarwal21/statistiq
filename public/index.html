@@ -162,14 +162,24 @@
                     <div class="stat-category-title">
                         <i class="fas fa-baseball-bat-ball"></i> Batting
                     </div>
-                    <div class="stats-grid">
+                    <div
+                        class="stats-grid"
+                        style="
+                            grid-template-columns: repeat(4, 1fr);
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-bat-inns">0</div>
+                            <div class="stat-label">Innings</div>
+                        </div>
                         <div class="stat-box">
                             <div class="stat-value" id="stat-total-runs">0</div>
-                            <div class="stat-label">Total Runs</div>
+                            <div class="stat-label">Runs</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-value" id="stat-bat-avg">0.00</div>
-                            <div class="stat-label">Bat Avg</div>
+                            <div class="stat-label">Average</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-value" id="stat-sr">0.00</div>
@@ -179,38 +189,81 @@
                             <div class="stat-value" id="stat-hs">0</div>
                             <div class="stat-label">High Score</div>
                         </div>
-                    </div>
-
-                    <div id="dismissalChartWrapper" style="display: none">
-                        <div class="chart-header">
-                            <i class="fas fa-chart-pie"></i> Dismissal Breakdown
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-not-outs">0</div>
+                            <div class="stat-label">Not Outs</div>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="dismissalChart"></canvas>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-100s">0</div>
+                            <div class="stat-label">100s</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-50s">0</div>
+                            <div class="stat-label">50s</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-total-4s">0</div>
+                            <div class="stat-label">Fours</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-total-6s">0</div>
+                            <div class="stat-label">Sixes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-ducks">0</div>
+                            <div class="stat-label">Ducks</div>
+                        </div>
+                        <div id="dismissalChartWrapper">
+                            <div class="chart-header">Dismissal Types</div>
+                            <div class="chart-container">
+                                <canvas id="dismissalChart"></canvas>
+                            </div>
                         </div>
                     </div>
 
                     <div class="stat-category-title">
                         <i class="fas fa-baseball-ball"></i> Bowling
                     </div>
-                    <div class="stats-grid">
+                    <div
+                        class="stats-grid"
+                        style="
+                            grid-template-columns: repeat(4, 1fr);
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-bowl-inns">0</div>
+                            <div class="stat-label">Innings</div>
+                        </div>
                         <div class="stat-box">
                             <div class="stat-value" id="stat-wickets">0</div>
                             <div class="stat-label">Wickets</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-bowl-avg">
+                                0.00
+                            </div>
+                            <div class="stat-label">Average</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-value" id="stat-economy">0.00</div>
                             <div class="stat-label">Economy</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="stat-bowl-avg">
-                                0.00
-                            </div>
-                            <div class="stat-label">Bowl Avg</div>
+                            <div class="stat-value" id="stat-bb">-</div>
+                            <div class="stat-label">Best Bowl</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="stat-bb">0/0</div>
-                            <div class="stat-label">Best Bowl</div>
+                            <div class="stat-value" id="stat-5w">0</div>
+                            <div class="stat-label">5W Hauls</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-wides">0</div>
+                            <div class="stat-label">Wides</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-noballs">0</div>
+                            <div class="stat-label">No Balls</div>
                         </div>
                     </div>
 
@@ -226,36 +279,16 @@
                             <div class="stat-label">Catches</div>
                         </div>
                         <div class="stat-box">
+                            <div class="stat-value" id="stat-dropped">0</div>
+                            <div class="stat-label">Dropped</div>
+                        </div>
+                        <div class="stat-box">
                             <div class="stat-value" id="stat-runouts">0</div>
                             <div class="stat-label">Run Outs</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-value" id="stat-stumpings">0</div>
                             <div class="stat-label">Stumpings</div>
-                        </div>
-                    </div>
-                    <div class="stat-category-title">
-                        <i class="fas fa-star"></i> Milestones
-                    </div>
-                    <div
-                        class="stats-grid"
-                        style="grid-template-columns: repeat(4, 1fr)"
-                    >
-                        <div class="stat-box">
-                            <div class="stat-value" id="stat-50s">0</div>
-                            <div class="stat-label">50s</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="stat-100s">0</div>
-                            <div class="stat-label">100s</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="stat-3w">0</div>
-                            <div class="stat-label">3W</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="stat-5w">0</div>
-                            <div class="stat-label">5W</div>
                         </div>
                     </div>
                 </div>
@@ -316,10 +349,14 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Format</label
-                            ><select id="format">
+                            ><select id="format" required>
                                 <option value="T20">T20</option>
                                 <option value="40 over">40 over</option>
                                 <option value="50 over">50 over</option>
+                                <option value="100 Ball">100 Ball</option>
+                                <option value="Test / Multi-day">
+                                    Test / Multi-day
+                                </option>
                                 <option value="Other">Other</option>
                             </select>
                         </div>
@@ -403,6 +440,85 @@
                         </select>
                     </div>
 
+                    <div
+                        id="batting2Section"
+                        style="
+                            display: none;
+                            margin-top: 1.5rem;
+                            padding-top: 1.5rem;
+                            border-top: 1px dashed var(--border);
+                        "
+                    >
+                        <div
+                            class="section-title"
+                            style="margin-top: 0; border: none"
+                        >
+                            2nd Innings Batting
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Runs</label
+                                ><input
+                                    type="number"
+                                    id="runs2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>Balls Faced</label
+                                ><input
+                                    type="number"
+                                    id="ballsFaced2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>4s</label
+                                ><input
+                                    type="number"
+                                    id="fours2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>6s</label
+                                ><input
+                                    type="number"
+                                    id="sixes2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            class="form-group checkbox-label"
+                            style="margin-top: 0.5rem"
+                        >
+                            <input type="checkbox" id="dismissed2" /> Dismissed?
+                        </div>
+                        <div
+                            class="form-group"
+                            id="dismissalContainer2"
+                            style="display: none; margin-top: 1rem"
+                        >
+                            <label>Dismissal Method</label>
+                            <select id="dismissalMethod2">
+                                <option value="Bowled">Bowled</option>
+                                <option value="Caught">Caught</option>
+                                <option value="LBW">LBW</option>
+                                <option value="Run Out">Run Out</option>
+                                <option value="Stumped">Stumped</option>
+                                <option value="Hit Wicket">Hit Wicket</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="section-title">Bowling</div>
                     <div class="form-row">
                         <div class="form-group">
@@ -445,6 +561,99 @@
                             />
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Wides</label>
+                            <input type="number" id="wides" min="0" value="0" />
+                        </div>
+                        <div class="form-group">
+                            <label>No Balls</label>
+                            <input
+                                type="number"
+                                id="noBalls"
+                                min="0"
+                                value="0"
+                            />
+                        </div>
+                    </div>
+
+                    <div
+                        id="bowling2Section"
+                        style="
+                            display: none;
+                            margin-top: 1.5rem;
+                            padding-top: 1.5rem;
+                            border-top: 1px dashed var(--border);
+                        "
+                    >
+                        <div
+                            class="section-title"
+                            style="margin-top: 0; border: none"
+                        >
+                            2nd Innings Bowling
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Overs</label
+                                ><input
+                                    type="number"
+                                    id="overs2"
+                                    step="0.1"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>Maidens</label
+                                ><input
+                                    type="number"
+                                    id="maidens2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Runs Conceded</label
+                                ><input
+                                    type="number"
+                                    id="runsConceded2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>Wickets</label
+                                ><input
+                                    type="number"
+                                    id="wickets2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Wides</label
+                                ><input
+                                    type="number"
+                                    id="wides2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>No Balls</label
+                                ><input
+                                    type="number"
+                                    id="noBalls2"
+                                    min="0"
+                                    value="0"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="section-title">Fielding & Extras</div>
                     <div class="form-row">
@@ -453,6 +662,15 @@
                             ><input
                                 type="number"
                                 id="catches"
+                                min="0"
+                                value="0"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Dropped Catches</label
+                            ><input
+                                type="number"
+                                id="droppedCatches"
                                 min="0"
                                 value="0"
                             />

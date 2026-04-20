@@ -142,11 +142,36 @@ form.addEventListener("submit", async (e) => {
         runsConceded:
             parseInt(document.getElementById("runsConceded").value) || 0,
         wickets: parseInt(document.getElementById("wickets").value) || 0,
+        wides: parseInt(document.getElementById("wides").value) || 0, // NEW
+        noBalls: parseInt(document.getElementById("noBalls").value) || 0, // NEW
         catches: parseInt(document.getElementById("catches").value) || 0,
+        droppedCatches:
+            parseInt(document.getElementById("droppedCatches").value) || 0,
         runouts: parseInt(document.getElementById("runouts").value) || 0,
         stumpings: parseInt(document.getElementById("stumpings").value) || 0,
         captain: document.getElementById("captain").checked,
         notes: document.getElementById("notes").value,
+
+        isMultiDay:
+            document.getElementById("format").value === "Test / Multi-day",
+
+        // 2nd Innings Batting
+        runs2: parseInt(document.getElementById("runs2").value) || 0,
+        ballsFaced2:
+            parseInt(document.getElementById("ballsFaced2").value) || 0,
+        fours2: parseInt(document.getElementById("fours2").value) || 0,
+        sixes2: parseInt(document.getElementById("sixes2").value) || 0,
+        dismissed2: document.getElementById("dismissed2").checked,
+        dismissalMethod2: document.getElementById("dismissalMethod2").value,
+
+        // 2nd Innings Bowling
+        overs2: parseFloat(document.getElementById("overs2").value) || 0,
+        maidens2: parseInt(document.getElementById("maidens2").value) || 0,
+        runsConceded2:
+            parseInt(document.getElementById("runsConceded2").value) || 0,
+        wickets2: parseInt(document.getElementById("wickets2").value) || 0,
+        wides2: parseInt(document.getElementById("wides2").value) || 0,
+        noBalls2: parseInt(document.getElementById("noBalls2").value) || 0,
     };
 
     try {
@@ -156,6 +181,9 @@ form.addEventListener("submit", async (e) => {
             .collection("matches")
             .add(matchData);
         form.reset();
+        document.getElementById("batting2Section").style.display = "none";
+        document.getElementById("bowling2Section").style.display = "none";
+        document.getElementById("dismissalContainer2").style.display = "none";
         dismissalContainer.style.display = "none";
         document.getElementById("date").valueAsDate = new Date();
         modal.style.display = "none";
@@ -209,6 +237,25 @@ dismissedCheckbox.addEventListener("change", (e) => {
     dismissalContainer.style.display = e.target.checked ? "block" : "none";
 });
 
+// Toggle 2nd Innings Form Sections
+document.getElementById("format").addEventListener("change", (e) => {
+    const isMulti = e.target.value === "Test / Multi-day";
+    document.getElementById("batting2Section").style.display = isMulti
+        ? "block"
+        : "none";
+    document.getElementById("bowling2Section").style.display = isMulti
+        ? "block"
+        : "none";
+});
+
+// Toggle 2nd Innings Dismissal Dropdown
+document.getElementById("dismissed2").addEventListener("change", (e) => {
+    document.getElementById("dismissalContainer2").style.display = e.target
+        .checked
+        ? "block"
+        : "none";
+});
+
 historyFilter.addEventListener("change", updateUI);
 dateFilterFrom.addEventListener("change", updateUI);
 dateFilterTo.addEventListener("change", updateUI);
@@ -220,12 +267,23 @@ clearFiltersBtn.addEventListener("click", () => {
     updateUI();
 });
 
-openModalBtn.onclick = () => (modal.style.display = "flex");
-closeModalSpan.onclick = () => (modal.style.display = "none");
-window.onclick = (e) => {
-    if (e.target == modal) modal.style.display = "none";
+// Modal Open/Close Logic
+openModalBtn.onclick = () => {
+    modal.style.display = "flex";
+    document.body.classList.add("no-scroll"); // BUGFIX: Lock scroll
 };
 
+closeModalSpan.onclick = () => {
+    modal.style.display = "none";
+    document.body.classList.remove("no-scroll"); // BUGFIX: Unlock scroll
+};
+
+window.onclick = (e) => {
+    if (e.target == modal) {
+        modal.style.display = "none";
+        document.body.classList.remove("no-scroll"); // BUGFIX: Unlock scroll
+    }
+};
 // Initial state
 document.getElementById("date").valueAsDate = new Date();
 
@@ -307,6 +365,9 @@ function updateUI() {
 }
 
 function renderHistory(filteredMatches) {
+    document.getElementById("history-header").innerText =
+        `${historyFilter.value === "All" ? "All Formats" : historyFilter.value} Match History (${filteredMatches.length} Matches)`;
+
     matchListEl.innerHTML = "";
     if (filteredMatches.length === 0) {
         matchListEl.innerHTML =
@@ -315,32 +376,72 @@ function renderHistory(filteredMatches) {
     }
 
     filteredMatches.forEach((match) => {
-        const isBatting =
-            match.ballsFaced > 0 || match.runs > 0 || match.dismissed;
-        const isBowling = match.overs > 0;
+        // Helpers to format the text
+        const getBatStr = (runs, balls, fours, sixes, dismissed, method) => {
+            if (balls === 0 && runs === 0 && !dismissed) return null;
+            let sr = balls > 0 ? ((runs / balls) * 100).toFixed(2) : "0.00";
+            let str = `${runs}${dismissed ? "" : "*"} (${sixes || 0}x6, ${fours || 0}x4 SR: ${sr})`;
+            if (dismissed && method) str += ` - ${method}`;
+            return str;
+        };
 
-        // NEW: Calculate Strike Rate for this specific match
-        let matchSR =
-            match.ballsFaced > 0
-                ? ((match.runs / match.ballsFaced) * 100).toFixed(2)
-                : "0.00";
+        const getBowlStr = (overs, maidens, runs, wickets, wides, noBalls) => {
+            if (overs <= 0) return null;
+            let econ =
+                oversToBalls(overs) > 0
+                    ? (runs / (oversToBalls(overs) / 6)).toFixed(2)
+                    : "0.00";
+            return `${overs}-${maidens || 0}-${runs}-${wickets} (Econ: ${econ}, Wd: ${wides || 0}, Nb: ${noBalls || 0})`;
+        };
 
-        // NEW: Added (SR: xxx) to the output string
-        let battingText = isBatting
-            ? `${match.runs}${match.dismissed ? "" : "*"} off ${match.ballsFaced} balls (SR: ${matchSR})`
-            : "Did not bat";
+        // Generate Strings
+        let bat1 = getBatStr(
+            match.runs,
+            match.ballsFaced,
+            match.fours,
+            match.sixes,
+            match.dismissed,
+            match.dismissalMethod,
+        );
+        let bat2 = match.isMultiDay
+            ? getBatStr(
+                  match.runs2,
+                  match.ballsFaced2,
+                  match.fours2,
+                  match.sixes2,
+                  match.dismissed2,
+                  match.dismissalMethod2,
+              )
+            : null;
 
-        let matchEconomy = "0.00";
-        if (isBowling && oversToBalls(match.overs) > 0) {
-            matchEconomy = (
-                match.runsConceded /
-                (oversToBalls(match.overs) / 6)
-            ).toFixed(2);
-        }
+        let battingText = "Did not bat";
+        if (bat1 && bat2) battingText = `1st: ${bat1} <br> 2nd: ${bat2}`;
+        else if (bat1) battingText = bat1;
+        else if (bat2) battingText = bat2; // In case they only batted in the 2nd innings
 
-        let bowlingText = isBowling
-            ? `${match.wickets}/${match.runsConceded} (${match.overs} ov, Econ: ${matchEconomy})`
-            : "Did not bowl";
+        let bowl1 = getBowlStr(
+            match.overs,
+            match.maidens,
+            match.runsConceded,
+            match.wickets,
+            match.wides,
+            match.noBalls,
+        );
+        let bowl2 = match.isMultiDay
+            ? getBowlStr(
+                  match.overs2,
+                  match.maidens2,
+                  match.runsConceded2,
+                  match.wickets2,
+                  match.wides2,
+                  match.noBalls2,
+              )
+            : null;
+
+        let bowlingText = "Did not bowl";
+        if (bowl1 && bowl2) bowlingText = `1st: ${bowl1} <br> 2nd: ${bowl2}`;
+        else if (bowl1) bowlingText = bowl1;
+        else if (bowl2) bowlingText = bowl2;
 
         let fieldingParts = [];
         if (match.catches > 0) fieldingParts.push(`${match.catches}c`);
@@ -361,9 +462,9 @@ function renderHistory(filteredMatches) {
                     </div>
                 </div>
                 <div class="match-performances">
-                    <div class="perf-section"><strong>Batting</strong><span><i class="fas fa-baseball-bat-ball"></i> ${battingText}</span></div>
-                    <div class="perf-section"><strong>Bowling</strong><span><i class="fas fa-baseball-ball"></i> ${bowlingText}</span></div>
-                    ${fieldingParts.length > 0 ? `<div class="perf-section"><strong>Fielding</strong><span><i class="fas fa-hands"></i> ${fieldingStr}</span></div>` : ""}
+                    <div class="perf-section"><strong>Batting</strong><span>${battingText}</span></div>
+                    <div class="perf-section"><strong>Bowling</strong><span>${bowlingText}</span></div>
+                    ${fieldingParts.length > 0 ? `<div class="perf-section"><strong>Fielding</strong><span>${fieldingStr}</span></div>` : ""}
                 </div>
                 ${match.notes ? `<div style="margin-top: 12px; padding-top: 10px; font-size: 0.85rem; color: var(--text-muted); font-style: italic;"><i class="fas fa-comment-dots" style="color: var(--text-muted); margin-right: 5px; width: 16px; text-align: center;"></i> "${match.notes}"</div>` : ""}
             </div>
@@ -378,66 +479,143 @@ function calculateStats(filteredMatches) {
         dismissals = 0;
     let highestScore = 0,
         hsNotOut = false;
-    let dismissalCounts = {};
     let totalWickets = 0,
         totalRunsConceded = 0,
         totalBallsBowled = 0;
     let bestWickets = -1,
         bestRuns = 999;
     let totalCatches = 0,
-        totalRunouts = 0;
+        totalRunouts = 0,
+        totalStumpings = 0,
+        totalDropped = 0;
+    let dismissalCounts = {};
     let resultsCounts = { Won: 0, Lost: 0, Draw: 0, Tie: 0 };
+
+    // NEW GRANULAR TRACKERS
+    let batInnings = 0,
+        bowlInnings = 0,
+        notOuts = 0,
+        ducks = 0;
     let fifties = 0,
         hundreds = 0,
-        threeWickets = 0,
         fiveWickets = 0;
+    let total4s = 0,
+        total6s = 0,
+        totalWides = 0,
+        totalNoBalls = 0;
 
     filteredMatches.forEach((m) => {
-        totalRuns += m.runs;
-        totalBallsFaced += m.ballsFaced;
-
         if (m.result) resultsCounts[m.result]++;
 
-        if (m.dismissed) {
-            dismissals++;
-            if (m.dismissalMethod) {
-                dismissalCounts[m.dismissalMethod] =
-                    (dismissalCounts[m.dismissalMethod] || 0) + 1;
-            } else {
-                dismissalCounts["Unknown"] =
-                    (dismissalCounts["Unknown"] || 0) + 1;
+        // --- HELPER: Process a single batting innings ---
+        const processBatting = (
+            runs,
+            balls,
+            fours,
+            sixes,
+            dismissed,
+            method,
+        ) => {
+            if (balls === 0 && runs === 0 && !dismissed) return; // Did not bat
+
+            batInnings++;
+            totalRuns += runs;
+            totalBallsFaced += balls;
+            total4s += fours || 0;
+            total6s += sixes || 0;
+
+            if (!dismissed) notOuts++;
+            if (dismissed && runs === 0) ducks++;
+
+            if (dismissed) {
+                dismissals++;
+                let dMethod = method || "Unknown";
+                dismissalCounts[dMethod] = (dismissalCounts[dMethod] || 0) + 1;
             }
-        }
 
-        if (m.runs > highestScore) {
-            highestScore = m.runs;
-            hsNotOut = !m.dismissed;
-        } else if (m.runs === highestScore && !m.dismissed && !hsNotOut) {
-            hsNotOut = true;
-        }
-
-        totalWickets += m.wickets;
-        totalRunsConceded += m.runsConceded;
-        totalBallsBowled += oversToBalls(m.overs);
-
-        if (
-            m.wickets > bestWickets ||
-            (m.wickets === bestWickets && m.runsConceded < bestRuns)
-        ) {
-            if (m.overs > 0) {
-                bestWickets = m.wickets;
-                bestRuns = m.runsConceded;
+            if (runs > highestScore) {
+                highestScore = runs;
+                hsNotOut = !dismissed;
+            } else if (runs === highestScore && !dismissed && !hsNotOut) {
+                hsNotOut = true;
             }
+
+            if (runs >= 100) hundreds++;
+            else if (runs >= 50) fifties++;
+        };
+
+        // --- HELPER: Process a single bowling innings ---
+        const processBowling = (
+            overs,
+            maidens,
+            runsC,
+            wickets,
+            wides,
+            noBalls,
+        ) => {
+            if (overs <= 0) return; // Did not bowl
+
+            bowlInnings++;
+            totalWickets += wickets;
+            totalRunsConceded += runsC;
+            totalBallsBowled += oversToBalls(overs);
+            totalWides += wides || 0;
+            totalNoBalls += noBalls || 0;
+
+            if (wickets >= 5) fiveWickets++;
+
+            if (
+                wickets > bestWickets ||
+                (wickets === bestWickets && runsC < bestRuns)
+            ) {
+                bestWickets = wickets;
+                bestRuns = runsC;
+            }
+        };
+
+        // Run the 1st Innings
+        processBatting(
+            m.runs,
+            m.ballsFaced,
+            m.fours,
+            m.sixes,
+            m.dismissed,
+            m.dismissalMethod,
+        );
+        processBowling(
+            m.overs,
+            m.maidens,
+            m.runsConceded,
+            m.wickets,
+            m.wides,
+            m.noBalls,
+        );
+
+        // Run the 2nd Innings if it exists
+        if (m.isMultiDay) {
+            processBatting(
+                m.runs2,
+                m.ballsFaced2,
+                m.fours2,
+                m.sixes2,
+                m.dismissed2,
+                m.dismissalMethod2,
+            );
+            processBowling(
+                m.overs2,
+                m.maidens2,
+                m.runsConceded2,
+                m.wickets2,
+                m.wides2,
+                m.noBalls2,
+            );
         }
 
-        totalCatches += m.catches;
-        totalRunouts += m.runouts;
-
-        if (m.runs >= 100) hundreds++;
-        else if (m.runs >= 50) fifties++;
-
-        if (m.wickets >= 5) fiveWickets++;
-        else if (m.wickets >= 3) threeWickets++;
+        // FIELDING LOGIC (Applies to whole match)
+        totalCatches += m.catches || 0;
+        totalRunouts += m.runouts || 0;
+        totalStumpings += m.stumpings || 0;
+        totalDropped += m.droppedCatches || 0;
     });
 
     const batAvg =
@@ -453,18 +631,34 @@ function calculateStats(filteredMatches) {
     const bowlAvg = totalWickets > 0 ? totalRunsConceded / totalWickets : 0;
     const bbString = bestWickets >= 0 ? `${bestWickets}/${bestRuns}` : "-";
 
+    // INJECT INTO DOM
+    document.getElementById("stat-bat-inns").innerText = batInnings;
     document.getElementById("stat-total-runs").innerText = totalRuns;
     document.getElementById("stat-bat-avg").innerText =
         dismissals === 0 && totalRuns > 0 ? "NA" : batAvg.toFixed(2);
     document.getElementById("stat-sr").innerText = strikeRate.toFixed(2);
     document.getElementById("stat-hs").innerText = hsString;
+    document.getElementById("stat-not-outs").innerText = notOuts;
+    document.getElementById("stat-100s").innerText = hundreds;
+    document.getElementById("stat-50s").innerText = fifties;
+    document.getElementById("stat-total-4s").innerText = total4s;
+    document.getElementById("stat-total-6s").innerText = total6s;
+    document.getElementById("stat-ducks").innerText = ducks;
+
+    document.getElementById("stat-bowl-inns").innerText = bowlInnings;
     document.getElementById("stat-wickets").innerText = totalWickets;
-    document.getElementById("stat-economy").innerText = economy.toFixed(2);
     document.getElementById("stat-bowl-avg").innerText =
         totalWickets === 0 ? "-" : bowlAvg.toFixed(2);
+    document.getElementById("stat-economy").innerText = economy.toFixed(2);
     document.getElementById("stat-bb").innerText = bbString;
+    document.getElementById("stat-5w").innerText = fiveWickets;
+    document.getElementById("stat-wides").innerText = totalWides;
+    document.getElementById("stat-noballs").innerText = totalNoBalls;
+
     document.getElementById("stat-catches").innerText = totalCatches;
+    document.getElementById("stat-dropped").innerText = totalDropped;
     document.getElementById("stat-runouts").innerText = totalRunouts;
+    document.getElementById("stat-stumpings").innerText = totalStumpings;
 
     renderStraightBarChart(dismissalCounts, dismissals);
     renderWinLossChart(resultsCounts, filteredMatches.length);
@@ -504,7 +698,7 @@ function renderStraightBarChart(dismissalCounts, totalDismissals) {
             label: label,
             data: [dismissalCounts[label]],
             backgroundColor: chartColors[index % chartColors.length],
-            barThickness: 18,
+            barThickness: 12,
             // NEW: Only round the far left and far right corners
             borderRadius: {
                 topLeft: isFirst ? 9 : 0,
@@ -580,7 +774,7 @@ function renderWinLossChart(resultsCounts, totalMatches) {
             label: label,
             data: [resultsCounts[label]],
             backgroundColor: resultColors[label],
-            barThickness: 18,
+            barThickness: 12,
             // NEW: Only round the far left and far right corners
             borderRadius: {
                 topLeft: isFirst ? 9 : 0,
