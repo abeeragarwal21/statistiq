@@ -98,6 +98,22 @@
     animation: slideUpFade 0.4s ease-out forwards;
 }
 
+/* The initial hidden state */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+    visibility: hidden;
+    animation-delay: 0.1s;
+}
+
+/* The state triggered by JavaScript */
+.reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
 /* =========================================
    1. RESET & BASE STYLES
    ========================================= */
@@ -765,4 +781,36 @@ button.primary-btn:hover {
 
 .status-bar.success {
     background-color: var(--status-win);
+}
+
+/* =========================================
+   FOOTER STYLING
+   ========================================= */
+.app-footer {
+    margin-top: 3rem;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: transparent;
+    text-align: center;
+}
+
+.footer-content p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.footer-links {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Ensure the main content doesn't feel cramped against the footer */
+.main-container {
+    min-height: calc(100vh - 200px); /* Adjust based on your header height */
 }

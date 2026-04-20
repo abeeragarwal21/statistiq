@@ -51,6 +51,27 @@ const modal = document.getElementById("matchModal");
 const openModalBtn = document.getElementById("openModalBtn");
 const closeModalSpan = document.getElementsByClassName("close-modal")[0];
 
+// --- SCROLL REVEAL LOGIC ---
+const scrollObserver = new IntersectionObserver(
+    (entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                // Optional: stop watching once it has appeared
+                scrollObserver.unobserve(entry.target);
+            }
+        });
+    },
+    {
+        threshold: 0.1, // Trigger when 10% of the element is visible
+    },
+);
+
+// Start observing all reveal elements
+document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
+    scrollObserver.observe(el);
+});
+
 // =========================================
 // 3. AUTHENTICATION LOGIC
 // =========================================
@@ -501,8 +522,8 @@ function renderHistory(filteredMatches) {
             : "";
 
         const html = `
-            <div class="match-card">
-                <div class="match-card-header" style="animation-delay: ${index * 0.05}s;">
+            <div class="match-card" style="animation-delay: ${index * 0.05}s;">
+                <div class="match-card-header">
                     <div>
                         <div class="match-title">${titleText} ${captainBadgeHtml}</div>
                         <div class="match-date">${new Date(match.date).toLocaleDateString("en-GB")} | ${match.format}</div>
