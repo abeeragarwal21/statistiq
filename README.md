@@ -17,4 +17,3 @@ An app to track your cricket season so far, with statistics and graphs to manage
 - Filter matches by team
 - Landing Page
 - Add dark mode
-- Add a footer
