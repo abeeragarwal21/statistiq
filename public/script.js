@@ -443,7 +443,7 @@ function renderHistory(filteredMatches) {
         const getBatStr = (runs, balls, fours, sixes, dismissed, method) => {
             if (balls === 0 && runs === 0 && !dismissed) return null;
             let sr = balls > 0 ? ((runs / balls) * 100).toFixed(2) : "0.00";
-            let str = `${runs}${dismissed ? "" : "*"} (${sixes || 0}x6, ${fours || 0}x4 SR: ${sr})`;
+            let str = `${runs}${dismissed ? "" : "*"} off ${balls} (${sixes || 0}x6, ${fours || 0}x4 SR: ${sr})`;
             if (dismissed && method) str += ` - ${method}`;
             return str;
         };
@@ -551,9 +551,13 @@ function calculateStats(filteredMatches) {
         dismissals = 0;
     let highestScore = 0,
         hsNotOut = false;
+
+    // NEW: Added totalMaidens to your bowling trackers
     let totalWickets = 0,
         totalRunsConceded = 0,
-        totalBallsBowled = 0;
+        totalBallsBowled = 0,
+        totalMaidens = 0;
+
     let bestWickets = -1,
         bestRuns = 999;
     let totalCatches = 0,
@@ -575,6 +579,15 @@ function calculateStats(filteredMatches) {
         total6s = 0,
         totalWides = 0,
         totalNoBalls = 0;
+
+    // NEW HELPER: Convert decimal overs (e.g., 4.5) to total balls
+    const oversToBalls = (o) => {
+        if (!o) return 0;
+        const parts = o.toString().split(".");
+        const completed = parseInt(parts[0]) || 0;
+        const balls = parseInt(parts[1]) || 0;
+        return completed * 6 + balls;
+    };
 
     filteredMatches.forEach((m) => {
         if (m.result) resultsCounts[m.result]++;
@@ -630,7 +643,12 @@ function calculateStats(filteredMatches) {
             bowlInnings++;
             totalWickets += wickets;
             totalRunsConceded += runsC;
+
+            // Convert to balls for accurate addition
             totalBallsBowled += oversToBalls(overs);
+            // NEW: Add maidens
+            totalMaidens += parseInt(maidens) || 0;
+
             totalWides += wides || 0;
             totalNoBalls += noBalls || 0;
 
@@ -690,6 +708,11 @@ function calculateStats(filteredMatches) {
         totalDropped += m.droppedCatches || 0;
     });
 
+    // NEW: Convert total balls back to standard Overs format
+    const finalOversCompleted = Math.floor(totalBallsBowled / 6);
+    const finalOversBalls = totalBallsBowled % 6;
+    const displayOvers = `${finalOversCompleted}.${finalOversBalls}`;
+
     const batAvg =
         dismissals > 0 ? totalRuns / dismissals : totalRuns > 0 ? totalRuns : 0;
     const strikeRate =
@@ -718,6 +741,13 @@ function calculateStats(filteredMatches) {
     document.getElementById("stat-ducks").innerText = ducks;
 
     document.getElementById("stat-bowl-inns").innerText = bowlInnings;
+
+    // NEW: Inject Overs and Maidens into the DOM
+    if (document.getElementById("stat-overs"))
+        document.getElementById("stat-overs").innerText = displayOvers;
+    if (document.getElementById("stat-maidens"))
+        document.getElementById("stat-maidens").innerText = totalMaidens;
+
     document.getElementById("stat-wickets").innerText = totalWickets;
     document.getElementById("stat-bowl-avg").innerText =
         totalWickets === 0 ? "-" : bowlAvg.toFixed(2);
