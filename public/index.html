@@ -111,30 +111,20 @@
                         <select id="historyFilter" class="filter-select">
                             <option value="All">All</option>
                             <option value="T20">T20</option>
-                            <option value="40 over">40 over</option>
-                            <option value="50 over">50 over</option>
-                            <option value="Other">Other</option>
+                            <option value="One Day">One Day</option>
+                            <option value="Multi Day">Multi Day</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <div class="filter-label">
-                            <i class="fas fa-calendar-alt"></i> From:
+                            <i class="fas fa-calendar-alt"></i> Season:
                         </div>
-                        <input
-                            type="date"
-                            id="dateFilterFrom"
-                            class="filter-select"
-                        />
-                    </div>
-                    <div class="filter-group">
-                        <div class="filter-label">
-                            <i class="fas fa-calendar-alt"></i> To:
-                        </div>
-                        <input
-                            type="date"
-                            id="dateFilterTo"
-                            class="filter-select"
-                        />
+                        <select id="seasonFilter" class="filter-select">
+                            <option value="All">All Seasons</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                        </select>
                     </div>
                     <div class="filter-group">
                         <div class="filter-label">
@@ -371,13 +361,8 @@
                             <label>Format</label
                             ><select id="format" required>
                                 <option value="T20">T20</option>
-                                <option value="40 over">40 over</option>
-                                <option value="50 over">50 over</option>
-                                <option value="100 Ball">100 Ball</option>
-                                <option value="Test / Multi-day">
-                                    Test / Multi-day
-                                </option>
-                                <option value="Other">Other</option>
+                                <option value="One Day">One Day</option>
+                                <option value="Multi Day">Multi Day</option>
                             </select>
                         </div>
                         <div class="form-group">

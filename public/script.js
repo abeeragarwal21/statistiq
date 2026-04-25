@@ -43,8 +43,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 // UI Elements
 const statusBar = document.getElementById("statusBar");
 const historyFilter = document.getElementById("historyFilter");
-const dateFilterFrom = document.getElementById("dateFilterFrom");
-const dateFilterTo = document.getElementById("dateFilterTo");
+const seasonFilter = document.getElementById("seasonFilter");
 const captainFilter = document.getElementById("captainFilter"); // Add this with your other filters
 const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 const modal = document.getElementById("matchModal");
@@ -201,8 +200,7 @@ form.addEventListener("submit", async (e) => {
         isCaptain: document.getElementById("isCaptain").checked, // NEW
         notes: document.getElementById("notes").value,
 
-        isMultiDay:
-            document.getElementById("format").value === "Test / Multi-day",
+        isMultiDay: document.getElementById("format").value === "Multi Day",
 
         // 2nd Innings Batting
         runs2: parseInt(document.getElementById("runs2").value) || 0,
@@ -289,7 +287,7 @@ dismissedCheckbox.addEventListener("change", (e) => {
 
 // Toggle 2nd Innings Form Sections
 document.getElementById("format").addEventListener("change", (e) => {
-    const isMulti = e.target.value === "Test / Multi-day";
+    const isMulti = e.target.value === "Multi Day";
     document.getElementById("batting2Section").style.display = isMulti
         ? "block"
         : "none";
@@ -307,15 +305,13 @@ document.getElementById("dismissed2").addEventListener("change", (e) => {
 });
 
 historyFilter.addEventListener("change", updateUI);
-dateFilterFrom.addEventListener("change", updateUI);
-dateFilterTo.addEventListener("change", updateUI);
+seasonFilter.addEventListener("change", updateUI);
 captainFilter.addEventListener("change", updateUI);
 
 clearFiltersBtn.addEventListener("click", () => {
     historyFilter.value = "All";
-    dateFilterFrom.value = "";
-    dateFilterTo.value = "";
-    captainFilter.value = "All"; // NEW
+    seasonFilter.value = "All";
+    captainFilter.value = "All";
     updateUI();
 });
 
@@ -361,35 +357,27 @@ function oversToBalls(oversStr) {
 
 function getFilteredMatches() {
     const selectedFormat = historyFilter.value;
-    const fromDate = dateFilterFrom.value;
-    const toDate = dateFilterTo.value;
+    const selectedSeason = seasonFilter.value;
     const selectedCaptain = captainFilter.value;
 
     return matches.filter((m) => {
         const formatMatch =
             selectedFormat === "All" || m.format === selectedFormat;
-        let dateMatch = true;
-        const matchDate = new Date(m.date);
-        matchDate.setHours(0, 0, 0, 0);
 
-        if (fromDate) {
-            const fDate = new Date(fromDate);
-            fDate.setHours(0, 0, 0, 0);
-            dateMatch = dateMatch && matchDate >= fDate;
-        }
-        if (toDate) {
-            const tDate = new Date(toDate);
-            tDate.setHours(0, 0, 0, 0);
-            dateMatch = dateMatch && matchDate <= tDate;
+        // Filter by year/season
+        let seasonMatch = true;
+        if (selectedSeason !== "All") {
+            const matchYear = new Date(m.date).getFullYear().toString();
+            seasonMatch = matchYear === selectedSeason;
         }
 
-        // NEW: Captaincy Check
+        // Captaincy Check
         let captainMatch = true;
         if (selectedCaptain === "Captain") {
             captainMatch = m.isCaptain === true;
         }
 
-        return formatMatch && dateMatch && captainMatch;
+        return formatMatch && seasonMatch && captainMatch;
     });
 }
 
@@ -398,22 +386,11 @@ function updateUI() {
     const formatPrefix =
         historyFilter.value === "All" ? "All Formats" : historyFilter.value;
 
-    // 2. Figure out the Date string first
-    const fromDate = dateFilterFrom.value;
-    const toDate = dateFilterTo.value;
-    let dateText = "All Time"; // Default to All Time
+    // 2. Figure out the Season string
+    const selectedSeason = seasonFilter.value;
+    let dateText = selectedSeason === "All" ? "All Time" : selectedSeason;
 
-    if (fromDate && toDate) {
-        const f = new Date(fromDate).toLocaleDateString("en-GB");
-        const t = new Date(toDate).toLocaleDateString("en-GB");
-        dateText = `${f} — ${t}`;
-    } else if (fromDate) {
-        dateText = `Since ${new Date(fromDate).toLocaleDateString("en-GB")}`;
-    } else if (toDate) {
-        dateText = `Up to ${new Date(toDate).toLocaleDateString("en-GB")}`;
-    }
-
-    // 3. Tag on the captaincy if needed
+    // 3. Tag on the format and captaincy if needed
     dateText += ` | ${formatPrefix}`;
     if (captainFilter.value === "Captain") {
         dateText += " | as captain";
