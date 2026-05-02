@@ -839,8 +839,7 @@ function renderWinLossChart(resultsCounts, totalMatches) {
     const resultColors = {
         Won: "#2ec4b6",
         Lost: "#dc2626",
-        Draw: "#0ea5e9",
-        Tie: "#a855f7",
+        Tie: "#0ea5e9",
     };
 
     const labels = Object.keys(resultsCounts).filter(
